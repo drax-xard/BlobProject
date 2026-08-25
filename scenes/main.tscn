@@ -34,13 +34,12 @@ theme_override_constants/separation = 0
 
 [node name="ViewportFrame" parent="HSplitContainer/LeftPanel" instance=ExtResource("2_scene")]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 12
 size_flags_stretch_ratio = 3.0
 
 [node name="BottomBar" type="HBoxContainer" parent="HSplitContainer/LeftPanel"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 60)
-size_flags_vertical = 8
 
 [node name="ActionBar" parent="HSplitContainer/LeftPanel/BottomBar" instance=ExtResource("4_scene")]
 layout_mode = 2

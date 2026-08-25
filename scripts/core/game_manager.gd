@@ -25,6 +25,7 @@ var party_size: int:
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	start_new_game()
 
 func start_new_game() -> void:
 	_init_default_party()
