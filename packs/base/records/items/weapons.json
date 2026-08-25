@@ -1,0 +1,102 @@
+[
+  {
+    "id": "sword_iron",
+    "name": "Iron Sword",
+    "type": "weapon",
+    "slot": "main_hand",
+    "damage_min": 3,
+    "damage_max": 7,
+    "speed": 1.0,
+    "requirements": { "strength": 8 },
+    "value": 50,
+    "description": "A sturdy iron blade. Reliable and well-balanced."
+  },
+  {
+    "id": "sword_steel",
+    "name": "Steel Sword",
+    "type": "weapon",
+    "slot": "main_hand",
+    "damage_min": 5,
+    "damage_max": 10,
+    "speed": 1.0,
+    "requirements": { "strength": 10 },
+    "value": 150,
+    "description": "Forged from fine steel. A warrior's trusted companion."
+  },
+  {
+    "id": "staff_wood",
+    "name": "Wooden Staff",
+    "type": "weapon",
+    "slot": "main_hand",
+    "damage_min": 1,
+    "damage_max": 3,
+    "speed": 0.8,
+    "requirements": { "energy": 6 },
+    "value": 20,
+    "description": "A simple wooden staff imbued with minor magical resonance."
+  },
+  {
+    "id": "dagger_steel",
+    "name": "Steel Dagger",
+    "type": "weapon",
+    "slot": "main_hand",
+    "damage_min": 2,
+    "damage_max": 5,
+    "speed": 1.5,
+    "requirements": { "agility": 8 },
+    "value": 40,
+    "description": "A sharp, lightweight dagger. Perfect for quick strikes."
+  },
+  {
+    "id": "mace_iron",
+    "name": "Iron Mace",
+    "type": "weapon",
+    "slot": "main_hand",
+    "damage_min": 4,
+    "damage_max": 8,
+    "speed": 0.7,
+    "requirements": { "strength": 10 },
+    "value": 80,
+    "description": "A heavy iron mace. Devastating against armored foes."
+  },
+  {
+    "id": "shield_wood",
+    "name": "Wooden Shield",
+    "type": "armor",
+    "slot": "off_hand",
+    "defense": 2,
+    "requirements": {},
+    "value": 25,
+    "description": "A basic wooden shield. Offers minimal protection."
+  },
+  {
+    "id": "armor_leather",
+    "name": "Leather Armor",
+    "type": "armor",
+    "slot": "body",
+    "defense": 3,
+    "requirements": { "agility": 6 },
+    "value": 60,
+    "description": "Light leather armor. Allows free movement."
+  },
+  {
+    "id": "armor_chain",
+    "name": "Chain Mail",
+    "type": "armor",
+    "slot": "body",
+    "defense": 6,
+    "requirements": { "strength": 10 },
+    "value": 200,
+    "description": "Interlocking metal rings. Good balance of protection and mobility."
+  },
+  {
+    "id": "robe_cloth",
+    "name": "Cloth Robe",
+    "type": "armor",
+    "slot": "body",
+    "defense": 1,
+    "requirements": {},
+    "value": 15,
+    "description": "A simple cloth robe. Offers no real protection, but doesn't hinder spellcasting."
+  }
+]

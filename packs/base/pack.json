@@ -1,0 +1,8 @@
+{
+  "id": "base",
+  "name": "BlobProject Base Content",
+  "version": "0.1.0",
+  "description": "Core game content for BlobProject",
+  "author": "BlobProject Team",
+  "dependencies": []
+}

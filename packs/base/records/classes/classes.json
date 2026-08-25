@@ -1,0 +1,110 @@
+[
+  {
+    "id": "warrior",
+    "name": "Warrior",
+    "type": "class",
+    "base_stats": {
+      "hp": 45,
+      "mp": 10,
+      "strength": 12,
+      "defense": 10,
+      "vitality": 10,
+      "energy": 6,
+      "agility": 8,
+      "luck": 6
+    },
+    "stat_growth": {
+      "hp": 8,
+      "mp": 2,
+      "strength": 2,
+      "defense": 2,
+      "vitality": 2,
+      "energy": 1,
+      "agility": 1,
+      "luck": 1
+    },
+    "equipment_slots": ["main_hand", "off_hand", "head", "body", "legs", "accessory"],
+    "description": "A stalwart fighter who excels in melee combat and can take significant punishment."
+  },
+  {
+    "id": "mage",
+    "name": "Mage",
+    "type": "class",
+    "base_stats": {
+      "hp": 25,
+      "mp": 40,
+      "strength": 4,
+      "defense": 4,
+      "vitality": 6,
+      "energy": 14,
+      "agility": 8,
+      "luck": 8
+    },
+    "stat_growth": {
+      "hp": 4,
+      "mp": 6,
+      "strength": 1,
+      "defense": 1,
+      "vitality": 1,
+      "energy": 3,
+      "agility": 1,
+      "luck": 1
+    },
+    "equipment_slots": ["main_hand", "off_hand", "head", "body", "legs", "accessory"],
+    "description": "A wielder of arcane forces. Fragile in body but devastating with spells."
+  },
+  {
+    "id": "cleric",
+    "name": "Cleric",
+    "type": "class",
+    "base_stats": {
+      "hp": 35,
+      "mp": 30,
+      "strength": 8,
+      "defense": 8,
+      "vitality": 12,
+      "energy": 10,
+      "agility": 6,
+      "luck": 8
+    },
+    "stat_growth": {
+      "hp": 6,
+      "mp": 4,
+      "strength": 1,
+      "defense": 1,
+      "vitality": 3,
+      "energy": 2,
+      "agility": 1,
+      "luck": 1
+    },
+    "equipment_slots": ["main_hand", "off_hand", "head", "body", "legs", "accessory"],
+    "description": "A holy warrior who supports the party with healing and protective magic."
+  },
+  {
+    "id": "thief",
+    "name": "Thief",
+    "type": "class",
+    "base_stats": {
+      "hp": 30,
+      "mp": 15,
+      "strength": 8,
+      "defense": 6,
+      "vitality": 8,
+      "energy": 6,
+      "agility": 14,
+      "luck": 12
+    },
+    "stat_growth": {
+      "hp": 5,
+      "mp": 3,
+      "strength": 1,
+      "defense": 1,
+      "vitality": 1,
+      "energy": 1,
+      "agility": 3,
+      "luck": 2
+    },
+    "equipment_slots": ["main_hand", "off_hand", "head", "body", "legs", "accessory"],
+    "description": "A swift and cunning rogue. Excels at evasion and critical strikes."
+  }
+]

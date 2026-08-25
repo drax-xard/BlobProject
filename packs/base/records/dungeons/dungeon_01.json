@@ -1,0 +1,50 @@
+{
+  "id": "dungeon_01",
+  "name": "The Goblin Caves",
+  "type": "dungeon",
+  "floors": 3,
+  "difficulty": 1,
+  "description": "A network of caves infested with goblins and other vermin.",
+  "floor_data": [
+    {
+      "floor": 1,
+      "width": 10,
+      "height": 10,
+      "encounter_rate": 0.15,
+      "enemy_pool": ["goblin", "slime"],
+      "music": "ambient_caves"
+    },
+    {
+      "floor": 2,
+      "width": 12,
+      "height": 12,
+      "encounter_rate": 0.25,
+      "enemy_pool": ["goblin", "skeleton"],
+      "music": "ambient_caves"
+    },
+    {
+      "floor": 3,
+      "width": 14,
+      "height": 14,
+      "encounter_rate": 0.35,
+      "enemy_pool": ["skeleton", "goblin"],
+      "music": "ambient_caves_deep"
+    }
+  ],
+  "encounter_tables": {
+    "easy": [
+      { "enemies": ["goblin"], "weight": 60 },
+      { "enemies": ["slime"], "weight": 40 }
+    ],
+    "medium": [
+      { "enemies": ["goblin", "goblin"], "weight": 40 },
+      { "enemies": ["skeleton"], "weight": 30 },
+      { "enemies": ["goblin", "slime"], "weight": 30 }
+    ],
+    "hard": [
+      { "enemies": ["skeleton", "goblin"], "weight": 50 },
+      { "enemies": ["skeleton", "skeleton"], "weight": 30 },
+      { "enemies": ["goblin", "goblin", "slime"], "weight": 20 }
+    ]
+  }
+}

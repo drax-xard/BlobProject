@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3 uid="uid://grid_world"]
+
+[ext_resource type="Script" path="res://scripts/world/grid_world.gd" id="1_script"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
+sky_top_color = Color(0.02, 0.02, 0.05, 1)
+sky_horizon_color = Color(0.05, 0.05, 0.08, 1)
+ground_bottom_color = Color(0.02, 0.02, 0.03, 1)
+ground_horizon_color = Color(0.05, 0.05, 0.08, 1)
+
+[sub_resource type="Sky" id="Sky_dungeon"]
+sky_material = SubResource("SkyMat")
+
+[sub_resource type="Environment" id="Env_dungeon"]
+background_mode = 2
+sky = SubResource("Sky_dungeon")
+ambient_light_source = 2
+ambient_light_color = Color(0.15, 0.12, 0.1, 1)
+ambient_light_energy = 0.5
+fog_enabled = true
+fog_light_color = Color(0.08, 0.06, 0.04, 1)
+fog_density = 0.05
+fog_sky_affect = 0.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_dummy"]
+size = Vector3(0.01, 0.01, 0.01)
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+fov = 70.0
+near = 0.1
+far = 50.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_dungeon")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.433, 0.25, 0, 0.5, 0.866, -0.5, -0.75, 0.433, 0, 5, 0)
+light_color = Color(0.9, 0.8, 0.6, 1)
+light_energy = 0.3
+shadow_enabled = true
+
+[node name="FloorMesh" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("BoxMesh_dummy")

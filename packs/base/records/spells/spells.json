@@ -1,0 +1,41 @@
+[
+  {
+    "id": "fireball",
+    "name": "Fireball",
+    "type": "spell",
+    "school": "destruction",
+    "mp_cost": 8,
+    "damage_min": 10,
+    "damage_max": 18,
+    "range": 3,
+    "target": "single",
+    "level_required": 1,
+    "description": "Hurls a ball of fire at a single enemy."
+  },
+  {
+    "id": "heal",
+    "name": "Heal",
+    "type": "spell",
+    "school": "restoration",
+    "mp_cost": 6,
+    "heal_min": 15,
+    "heal_max": 25,
+    "range": 0,
+    "target": "single_ally",
+    "level_required": 1,
+    "description": "Restores health to a single ally."
+  },
+  {
+    "id": "smite",
+    "name": "Smite",
+    "type": "spell",
+    "school": "holy",
+    "mp_cost": 10,
+    "damage_min": 12,
+    "damage_max": 20,
+    "range": 2,
+    "target": "single",
+    "level_required": 1,
+    "description": "Strikes an enemy with divine power."
+  }
+]

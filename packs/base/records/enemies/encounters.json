@@ -1,0 +1,47 @@
+[
+  {
+    "id": "goblin",
+    "name": "Goblin",
+    "type": "enemy",
+    "level": 1,
+    "hp": 15,
+    "mp": 0,
+    "strength": 5,
+    "defense": 2,
+    "agility": 8,
+    "xp_reward": 25,
+    "gold_reward": { "min": 5, "max": 15 },
+    "loot_table": ["potion_health"],
+    "description": "A small, cunning creature that lurks in dark places."
+  },
+  {
+    "id": "skeleton",
+    "name": "Skeleton",
+    "type": "enemy",
+    "level": 2,
+    "hp": 25,
+    "mp": 0,
+    "strength": 7,
+    "defense": 5,
+    "agility": 4,
+    "xp_reward": 40,
+    "gold_reward": { "min": 10, "max": 25 },
+    "loot_table": ["potion_health", "antidote"],
+    "description": "An animated skeleton. Relentless and unfeeling."
+  },
+  {
+    "id": "slime",
+    "name": "Green Slime",
+    "type": "enemy",
+    "level": 1,
+    "hp": 10,
+    "mp": 0,
+    "strength": 3,
+    "defense": 1,
+    "agility": 2,
+    "xp_reward": 15,
+    "gold_reward": { "min": 2, "max": 8 },
+    "loot_table": [],
+    "description": "A gelatinous blob. Simple but surprisingly resilient."
+  }
+]

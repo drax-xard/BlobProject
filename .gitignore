@@ -1,0 +1,29 @@
+# Godot 4+ specific ignores
+.godot/
+*.import
+export_presets.cfg
+
+# Builds
+builds/
+export/
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Godot import cache (re-generates on project open)
+.godot/imported/
+.godot/imported

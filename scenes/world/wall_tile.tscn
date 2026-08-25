@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://tile_wall"]
+
+[ext_resource type="Script" path="res://scripts/world/wall_tile.gd" id="1_script"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="StandardMaterial3D" id="Mat_wall"]
+albedo_color = Color(0.35, 0.25, 0.18, 1)
+roughness = 0.9
+
+[node name="WallTile" type="MeshInstance3D"]
+script = ExtResource("1_script")
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Mat_wall")

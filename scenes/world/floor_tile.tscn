@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://tile_floor"]
+
+[ext_resource type="Script" path="res://scripts/world/floor_tile.gd" id="1_script"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
+size = Vector2(2, 2)
+
+[sub_resource type="StandardMaterial3D" id="Mat_floor"]
+albedo_color = Color(0.25, 0.3, 0.2, 1)
+roughness = 0.8
+
+[node name="FloorTile" type="MeshInstance3D"]
+script = ExtResource("1_script")
+mesh = SubResource("PlaneMesh_floor")
+surface_material_override/0 = SubResource("Mat_floor")
