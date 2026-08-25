@@ -34,7 +34,7 @@ func _resolve_input(event: InputEventKey) -> Action:
 
 func _process_player_action(action: Action) -> void:
 	is_turn_active = true
-	var world := get_tree().current_scene.get_node_or_null("World")
+	var world := get_tree().current_scene.find_child("World", true, true)
 	if world:
 		action.execute(world)
 	action_performed.emit(action)

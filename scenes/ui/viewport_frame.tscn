@@ -12,6 +12,7 @@ script = ExtResource("1_script")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 size = Vector2i(1280, 720)
+own_world_3d = true
 render_target_update_mode = 3
 handle_input_locally = false
 

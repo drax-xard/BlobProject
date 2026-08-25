@@ -55,8 +55,7 @@ size_flags_vertical = 3
 [node name="PartyDisplay" parent="HSplitContainer/RightPanel" instance=ExtResource("3_scene")]
 layout_mode = 2
 
-[node name="World" parent="." instance=ExtResource("5_scene")]
-visible = false
+[node name="World" parent="HSplitContainer/LeftPanel/ViewportFrame/SubViewport" instance=ExtResource("5_scene")]
 
 [node name="VersionLabel" type="Label" parent="."]
 layout_mode = 0

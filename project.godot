@@ -1,6 +1,16 @@
 ; Engine configuration file.
 ; It's best edited using the editor UI and not directly,
-; but it can also be edited via text editor.
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
@@ -8,7 +18,7 @@ config/name="BlobProject"
 config/description="A moddable and extensible grid-based first-person dungeon crawler"
 config/version="0.1.0-alpha"
 run/main_scene="res://scenes/main.tscn"
-config/features=PackedStringArray("4.4", "Forward Plus")
+config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -20,7 +30,6 @@ DataRegistry="*res://scripts/data/data_registry.gd"
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
-window/size/resizable=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
@@ -67,7 +76,5 @@ strafe_right={
 
 [rendering]
 
-renderer/rendering_method="forward_plus"
-textures/default_textures_canvas_textures_filter=0
-anti_aliasing/quality/msaa_3d=0
 environment/defaults/default_clear_color=Color(0.05, 0.05, 0.08, 1)
+textures/default_textures_canvas_textures_filter=0
