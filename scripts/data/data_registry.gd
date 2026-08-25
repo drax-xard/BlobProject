@@ -30,7 +30,7 @@ func _load_category(category: String) -> void:
 	dir.list_dir_end()
 	data_loaded.emit(category)
 
-func _load_json_file(file_path: String, category: String) -> void:
+func _load_json_file(file_path: String, _category: String) -> void:
 	var file := FileAccess.open(file_path, FileAccess.READ)
 	if not file:
 		push_warning("DataRegistry: Could not open file: %s" % file_path)

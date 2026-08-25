@@ -1,7 +1,7 @@
 extends Node
 
-signal turn_started(turn_number: int)
-signal turn_ended(turn_number: int)
+signal _turn_started(_turn_number: int)
+signal _turn_ended(_turn_number: int)
 signal party_changed()
 
 enum GameState {
