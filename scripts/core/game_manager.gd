@@ -35,7 +35,7 @@ func start_new_game() -> void:
 
 func _init_default_party() -> void:
 	party = []
-	var default_characters := [
+	var default_characters: Array[Dictionary] = [
 		{
 			"id": "warrior_01",
 			"name": "Roland",

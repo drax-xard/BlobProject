@@ -38,10 +38,13 @@ func _build_test_dungeon() -> void:
 	grid_data[4][3] = 1
 	_build_grid_mesh()
 
+const CELLS_TO_KEEP := ["Camera3D", "WorldEnvironment", "DirectionalLight3D", "OmniLight3D", "FloorMesh"]
+
 func _build_grid_mesh() -> void:
 	for child in get_children():
-		if child != camera and child != grid_mesh:
-			child.queue_free()
+		if child.name in CELLS_TO_KEEP:
+			continue
+		child.queue_free()
 	var wall_scene: PackedScene = load("res://scenes/world/wall_tile.tscn")
 	var floor_scene: PackedScene = load("res://scenes/world/floor_tile.tscn")
 	for y in range(grid_height):
