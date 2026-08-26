@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.7.0-alpha] - 2026-08-26
+
+### Added
+- **DialogueManager** (`scripts/core/dialogue_manager.gd`) — Autoload for NPC dialogue
+  - `start_dialogue(npc_id)` loads dialogue tree from DataRegistry
+  - `select_choice(index)` advances dialogue with effect execution
+  - Condition evaluation: `has_item`, `flag`, `gold_min`, `quest_complete`, `quest_started`, `stat_check`
+  - Effect execution: `give_item`, `take_item`, `give_gold`, `set_flag`, `start_quest`, `open_shop` (stub)
+  - Signals: `dialogue_started`, `dialogue_ended`, `dialogue_node_changed`, `dialogue_effect`
+- **DialoguePanel** (`scripts/ui/dialogue_panel.gd` + `.tscn`) — Dialogue UI overlay
+  - NPC name display, text with typewriter effect, numbered choice buttons
+  - Keyboard navigation (1-9 for choices, click/key to skip typewriter)
+  - Auto-hides when dialogue ends
+- **Game flags** — `GameManager.game_flags` Dictionary with `set_flag()`, `has_flag()`, `get_flag()`
+- **Quest tracking** — `GameManager.quests` Dictionary with `start_quest()`, `complete_quest()`, `is_quest_complete()`
+- **NPC data** — `packs/base/records/npcs/npcs.json` with blacksmith example (dialogue tree, shop inventory)
+- **NPC validation** — DataRegistry validates `dialogue_tree` and `shop_inventory` on NPC records
+- **Save/Load extended** — `game_flags` and `quests` now saved/loaded
+
 ## [0.6.1-alpha] - 2026-08-26
 
 ### Fixed
