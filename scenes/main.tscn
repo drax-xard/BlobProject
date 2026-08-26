@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://main_scene"]
+[gd_scene load_steps=10 format=3 uid="uid://main_scene"]
 
 [ext_resource type="Script" path="res://scripts/core/turn_manager.gd" id="1_script"]
 [ext_resource type="Script" path="res://scripts/ui/main_layout.gd" id="2_layout"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="7_inv"]
 [ext_resource type="Script" path="res://scripts/core/combat_manager.gd" id="8_combat"]
 [ext_resource type="PackedScene" path="res://scenes/ui/combat_ui.tscn" id="9_combat_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/game_log.tscn" id="10_log"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -56,7 +57,17 @@ layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 3
 
-[node name="PartyDisplay" parent="HSplitContainer/RightPanel" instance=ExtResource("4_scene")]
+[node name="VBox" type="VBoxContainer" parent="HSplitContainer/RightPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="PartyDisplay" parent="HSplitContainer/RightPanel/VBox" instance=ExtResource("4_scene")]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="GameLog" parent="HSplitContainer/RightPanel/VBox" instance=ExtResource("10_log")]
 layout_mode = 2
 
 [node name="World" parent="HSplitContainer/LeftPanel/ViewportFrame/SubViewport" instance=ExtResource("6_scene")]

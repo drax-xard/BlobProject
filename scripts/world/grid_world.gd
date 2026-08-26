@@ -72,6 +72,7 @@ func load_dungeon(dungeon_id: String, floor: int) -> void:
 	_encounter_tables = dungeon_record.get("encounter_tables", {})
 	_combat_manager = get_tree().current_scene.get_node_or_null("CombatManager")
 	DebugLog.info("GridWorld: Loaded dungeon '%s' floor %d (%dx%d, encounter_rate=%.2f)" % [dungeon_id, floor, grid_width, grid_height, _encounter_rate])
+	GameManager.game_event.emit("Entered %s, floor %d" % [dungeon_record.get("name", dungeon_id), floor], Color(0.7, 0.85, 1.0))
 	_generate_dungeon(dungeon_id, floor)
 	_build_grid_mesh()
 	_place_player_at_stairs_up()
@@ -318,8 +319,10 @@ func _transition_to_next_floor() -> void:
 	var dungeon_record: Dictionary = DataRegistry.get_record(_current_dungeon_id)
 	var floor_data: Variant = dungeon_record.get("floor_data", [])
 	if _current_floor >= floor_data.size():
+		GameManager.game_event.emit("Reached the end of the dungeon!", Color(1.0, 0.9, 0.3))
 		DebugLog.info("GridWorld: Reached the end of the dungeon!")
 		return
+	GameManager.game_event.emit("Descending to floor %d..." % (_current_floor + 1), Color(0.7, 0.7, 1.0))
 	GameManager.current_floor = _current_floor + 1
 	load_dungeon(_current_dungeon_id, GameManager.current_floor)
 
@@ -341,7 +344,9 @@ func _find_stairs_down_pos() -> Vector2i:
 func _open_chest() -> void:
 	grid_data[player_grid_pos.y][player_grid_pos.x] = DungeonGenerator.CELL_FLOOR
 	_build_grid_mesh()
+	var gold_found: int = randi_range(5, 20)
 	GameManager.add_item("potion_health", 1)
-	GameManager.gold += randi_range(5, 20)
+	GameManager.gold += gold_found
 	GameManager.inventory_changed.emit()
-	DebugLog.info("GridWorld: Opened chest! Found health potion and gold.")
+	GameManager.game_event.emit("Found a Health Potion and %d gold!" % gold_found, Color(1.0, 0.85, 0.2))
+	DebugLog.info("GridWorld: Opened chest! Found health potion and %d gold." % gold_found)
