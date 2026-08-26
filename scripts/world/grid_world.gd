@@ -38,7 +38,7 @@ func load_dungeon(dungeon_id: String, floor: int) -> void:
 		return
 	var floor_data: Variant = dungeon_record.get("floor_data")
 	if not floor_data is Array:
-		DebugLog.data_issue(dungeon_id, "floor_data", "Array", typeof(floor_data))
+		DebugLog.data_issue(dungeon_id, "floor_data", "Array", type_string(typeof(floor_data)))
 		_build_default_grid()
 		return
 	if floor < 1 or floor > floor_data.size():
@@ -47,7 +47,7 @@ func load_dungeon(dungeon_id: String, floor: int) -> void:
 		return
 	var fd: Variant = floor_data[floor - 1]
 	if not fd is Dictionary:
-		DebugLog.data_issue(dungeon_id, "floor_data[%d]" % (floor - 1), "Dictionary", typeof(fd))
+		DebugLog.data_issue(dungeon_id, "floor_data[%d]" % (floor - 1), "Dictionary", type_string(typeof(fd)))
 		_build_default_grid()
 		return
 	var w: Variant = fd.get("width")

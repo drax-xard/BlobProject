@@ -89,7 +89,7 @@ func _validate_class_record(record: Dictionary, id: String) -> void:
 		if not stats.has(key):
 			DebugLog.data_issue(id, "base_stats.%s" % key, "int", "missing")
 		elif not stats[key] is int and not stats[key] is float:
-			DebugLog.data_issue(id, "base_stats.%s" % key, "int", typeof(stats[key]))
+			DebugLog.data_issue(id, "base_stats.%s" % key, "int", type_string(typeof(stats[key])))
 
 func _validate_equipment_record(record: Dictionary, id: String) -> void:
 	if not record.has("slot"):
@@ -116,7 +116,7 @@ func _validate_dungeon_record(record: Dictionary, id: String) -> void:
 	for i in range(floors.size()):
 		var fd: Variant = floors[i]
 		if not fd is Dictionary:
-			DebugLog.data_issue(id, "floor_data[%d]" % i, "Dictionary", typeof(fd))
+			DebugLog.data_issue(id, "floor_data[%d]" % i, "Dictionary", type_string(typeof(fd)))
 			continue
 		for key in ["width", "height", "encounter_rate"]:
 			if not fd.has(key):
