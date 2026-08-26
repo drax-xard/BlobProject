@@ -289,8 +289,9 @@ func _refresh_inventory() -> void:
 
 func _refresh_item_selection() -> void:
 	for i in range(_inventory_container.get_child_count()):
-		var btn: Button = _inventory_container.get_child(i)
-		btn.modulate = Color(1, 1, 1) if i != _selected_item_idx else Color(0.8, 1.0, 0.8)
+		var child: Node = _inventory_container.get_child(i)
+		if child is Button:
+			child.modulate = Color(1, 1, 1) if i != _selected_item_idx else Color(0.8, 1.0, 0.8)
 	_update_info_label()
 
 func _update_info_label() -> void:
