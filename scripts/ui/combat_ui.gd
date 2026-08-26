@@ -435,13 +435,3 @@ func _clear_log() -> void:
 	if _log_container:
 		for child in _log_container.get_children():
 			child.queue_free()
-
-func _input(event: InputEvent) -> void:
-	if not visible:
-		return
-	if not (event is InputEventKey and event.pressed):
-		return
-	if event.is_action_pressed("open_inventory"):
-		set_input_as_handled()
-	elif event.is_action_pressed("pause_game"):
-		set_input_as_handled()
