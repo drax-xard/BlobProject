@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 ## [0.2.1-alpha] - 2026-08-25
 
 ### Added
+- **Development plan** (`docs/DEVELOPMENT_PLAN.md`) — Comprehensive implementation roadmap covering 7 phases, 25 tasks, with file paths, acceptance criteria, and dependency graph for AI agent compatibility
 - **Project documentation** (`docs/`) — 13 Markdown files covering all game systems:
   - `docs/README.md` — Project index and overview
   - `docs/architecture.md` — System architecture, autoloads, data flow, signal architecture
