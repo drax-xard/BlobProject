@@ -1,5 +1,6 @@
 extends PanelContainer
 
+var _portrait: TextureRect
 var _npc_name_label: Label
 var _text_label: Label
 var _choices_container: VBoxContainer
@@ -37,30 +38,52 @@ func _build_ui() -> void:
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 8)
 	margin.add_child(vbox)
+	var hbox := HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 12)
+	vbox.add_child(hbox)
+	_portrait = TextureRect.new()
+	_portrait.custom_minimum_size = Vector2(80, 80)
+	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	hbox.add_child(_portrait)
+	var right_col := VBoxContainer.new()
+	right_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right_col.add_theme_constant_override("separation", 8)
+	hbox.add_child(right_col)
 	_npc_name_label = Label.new()
 	_npc_name_label.add_theme_font_size_override("font_size", 18)
 	_npc_name_label.add_theme_color_override("font_color", Color(1.0, 0.9, 0.5))
-	vbox.add_child(_npc_name_label)
+	right_col.add_child(_npc_name_label)
 	var sep := HSeparator.new()
-	vbox.add_child(sep)
+	right_col.add_child(sep)
 	_text_label = Label.new()
 	_text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_text_label.custom_minimum_size = Vector2(0, 80)
 	_text_label.add_theme_font_size_override("font_size", 15)
-	vbox.add_child(_text_label)
+	right_col.add_child(_text_label)
 	var sep2 := HSeparator.new()
-	vbox.add_child(sep2)
+	right_col.add_child(sep2)
 	_choices_container = VBoxContainer.new()
 	_choices_container.add_theme_constant_override("separation", 4)
-	vbox.add_child(_choices_container)
+	right_col.add_child(_choices_container)
 	_typewriter_timer = Timer.new()
 	_typewriter_timer.wait_time = 0.03
 	_typewriter_timer.one_shot = false
 	_typewriter_timer.timeout.connect(_on_typewriter_tick)
 	add_child(_typewriter_timer)
 
-func _on_dialogue_started(_npc_id: String, npc_name: String) -> void:
+func _on_dialogue_started(npc_id: String, npc_name: String) -> void:
 	_npc_name_label.text = npc_name
+	var record: Dictionary = DataRegistry.get_record(npc_id)
+	var portrait_path: String = record.get("portrait", "")
+	if not portrait_path.is_empty():
+		var tex := ResLoader.load_texture("base", portrait_path)
+		if tex:
+			_portrait.texture = tex
+			_portrait.visible = true
+		else:
+			_portrait.visible = false
+	else:
+		_portrait.visible = false
 	visible = true
 
 func _on_node_changed(_node_id: String, text: String, choices: Array) -> void:
