@@ -69,6 +69,14 @@ GameManager.heal_party_member(index: int, amount: int) -> void
 GameManager.damage_party_member(index: int, amount: int) -> void
 GameManager.is_party_alive() -> bool
 GameManager.get_version() -> String
+# Inventory
+GameManager.add_item(item_id: String, qty: int = 1) -> void
+GameManager.remove_item(item_id: String, qty: int = 1) -> bool
+GameManager.has_item(item_id: String) -> bool
+GameManager.get_item_quantity(item_id: String) -> int
+GameManager.get_inventory() -> Array[Dictionary]
+GameManager.equip_item(char_index: int, item_id: String) -> bool
+GameManager.unequip_item(char_index: int, slot: String) -> bool
 ```
 
 ### 3. DataRegistry (`scripts/data/data_registry.gd`)

@@ -99,14 +99,15 @@ The project is a working Godot 4.4+ prototype with:
 
 ---
 
-## Phase 2: Inventory & Equipment
+## Phase 2: Inventory & Equipment ✅ COMPLETE
 
 > **Goal:** Players can manage items, equip gear, see stats change.
 > **Depends on:** Phase 1 (party loaded from data with equipment slots).
+> **Status:** Completed in v0.2.4-alpha.
 
-### Task 2.1: Add inventory data to GameManager
+### Task 2.1: Add inventory data to GameManager ✅
 
-**Files to modify:** `scripts/core/game_manager.gd`
+**Files modified:** `scripts/core/game_manager.gd`
 
 **What to do:**
 - Add `inventory: Array[Dictionary]` — each entry: `{ "id": String, "quantity": int }`
@@ -128,10 +129,10 @@ The project is a working Godot 4.4+ prototype with:
 - Signal fires on changes
 - Unit-testable via GDScript (manually verify in console)
 
-### Task 2.2: Create inventory UI
+### Task 2.2: Create inventory UI ✅
 
-**Files to create:** `scenes/ui/inventory_panel.tscn`, `scripts/ui/inventory_panel.gd`
-**Files to modify:** `scenes/main.tscn` (add as hidden overlay), `scripts/core/game_manager.gd` (toggle logic)
+**Files created:** `scenes/ui/inventory_panel.tscn`, `scripts/ui/inventory_panel.gd`
+**Files modified:** `scenes/main.tscn`
 
 **What to do:**
 - Create a panel that shows/hides when GameManager.state == INVENTORY

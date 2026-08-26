@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://main_scene"]
+[gd_scene load_steps=8 format=3 uid="uid://main_scene"]
 
 [ext_resource type="Script" path="res://scripts/core/turn_manager.gd" id="1_script"]
 [ext_resource type="Script" path="res://scripts/ui/main_layout.gd" id="2_layout"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://party_display" path="res://scenes/ui/party_display.tscn" id="4_scene"]
 [ext_resource type="PackedScene" uid="uid://action_bar" path="res://scenes/ui/action_bar.tscn" id="5_scene"]
 [ext_resource type="PackedScene" uid="uid://grid_world" path="res://scenes/world/grid_world.tscn" id="6_scene"]
+[ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="7_inv"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -55,6 +56,8 @@ layout_mode = 2
 
 [node name="World" parent="HSplitContainer/LeftPanel/ViewportFrame/SubViewport" instance=ExtResource("6_scene")]
 
+[node name="InventoryPanel" parent="." instance=ExtResource("7_inv")]
+
 [node name="VersionLabel" type="Label" parent="."]
 layout_mode = 0
 anchors_preset = 2
@@ -65,4 +68,4 @@ offset_top = -24.0
 offset_right = 200.0
 offset_bottom = -4.0
 grow_vertical = 0
-text = "BlobProject v0.2.3-alpha"
+text = "BlobProject v0.2.4-alpha"

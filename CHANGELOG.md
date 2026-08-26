@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.4-alpha] - 2026-08-25
+
+### Added
+- **Inventory system** — Full item management with add/remove/has/get methods
+- **Equipment system** — Equip/unequip items to character slots with stat requirement validation
+- **Inventory UI** (`scenes/ui/inventory_panel.tscn`) — Full-screen overlay with:
+  - Party member selector (keys 1-4)
+  - Character stats display (HP, MP, all combat stats, spells)
+  - Equipment slots display (6 slots per character)
+  - Scrollable item list with quantities
+  - Equip/Use/Drop actions (keyboard: Enter/U/D or click)
+  - Item info panel showing description and value
+  - Gold display
+- **Consumable usage** — Health potions and mana potions work from inventory
+- Signal: `GameManager.inventory_changed()` emitted on any inventory modification
+
 ## [0.2.3-alpha] - 2026-08-25
 
 ### Fixed
