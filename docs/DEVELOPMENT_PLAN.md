@@ -327,12 +327,90 @@ The project is a working Godot 4.4+ prototype with:
 
 ---
 
-## Phase 5: Save/Load System
+## Phase 5: Save/Load System + Resource Loader
 
-> **Goal:** Player progress persists across sessions.
-> **Depends on:** Phases 1-3 (all game state that needs saving).
+> **Goal:** Player progress persists across sessions. Framework for loading sprites, textures, audio, and music from mod packs.
+> **Depends on:** Phases 1-4 (all game state that needs saving, dungeon system).
 
-### Task 5.1: Create SaveManager autoload
+### Task 5.1: Create ResourceLoader (asset pipeline)
+
+**Files to create:** `scripts/core/resource_loader.gd`
+
+**What to do:**
+- Create a static class or autoload for loading and caching game resources from mod packs
+- Resource types to support:
+  - `texture` — PNG/WebP images (sprites, portraits, tilesets)
+  - `audio` — OGG/WAV files (SFX, music, ambient)
+  - `scene` — PackedScene (UI elements, effects)
+- API:
+  - `load_texture(pack_id: String, path: String) -> Texture2D`
+  - `load_audio(pack_id: String, path: String) -> AudioStream`
+  - `load_scene(pack_id: String, path: String) -> PackedScene`
+  - `preload_pack(pack_id: String) -> void` — batch load all resources declared in pack manifest
+  - `get_or_load(type: String, pack_id: String, path: String) -> Resource` — cached access
+- Cache loaded resources in a Dictionary keyed by `"type:pack_id:path"`
+- Fallback chain: requested pack → base pack → placeholder
+- Placeholder generation for missing resources:
+  - Textures: colored rectangles with label (red=missing texture, blue=missing audio)
+  - Audio: silent AudioStreamGenerator placeholder
+  - Log warnings for missing resources via DebugLog
+
+**Acceptance criteria:**
+- Resources load from `packs/<pack_id>/assets/<type>/` directory
+- Same resource requested twice returns cached instance
+- Missing resources produce a placeholder and log a warning, never crash
+- Placeholder textures are visually distinct (colored rectangles with "MISSING" label)
+
+**Technical notes:**
+- Pack directory structure: `packs/<pack_id>/assets/textures/`, `packs/<pack_id>/assets/audio/`, `packs/<pack_id>/assets/scenes/`
+- Resources referenced by relative path from pack root (e.g., `"textures/wall_stone.png"`)
+- `Image.create_placeholder()` or `Image.create()` for generated textures
+- `AudioStreamGenerator` or `AudioStreamWAV` for silent placeholders
+
+### Task 5.2: Pack manifest with resource declarations
+
+**Files to modify:** `packs/base/pack.json`
+
+**What to do:**
+- Extend pack.json to declare available assets:
+  ```json
+  {
+    "assets": {
+      "textures": ["wall_stone.png", "floor_wood.png", "portrait_warrior.png"],
+      "audio": ["music_explore.ogg", "sfx_sword_hit.wav", "amb_cave.ogg"],
+      "scenes": []
+    }
+  }
+  ```
+- DataRegistry reads asset list on pack load
+- ResourceLoader uses manifest to know what's available
+- If a record references an asset not in the manifest, log a warning
+
+**Acceptance criteria:**
+- Pack manifest declares all available assets
+- DataRegistry exposes `get_asset_list(pack_id: String) -> Dictionary`
+- Missing asset references are logged, not crashed
+
+### Task 5.3: Wire placeholder resources into existing systems
+
+**Files to modify:** `scripts/world/grid_world.gd`, `scripts/ui/party_display.gd`, `scripts/ui/combat_ui.gd`
+
+**What to do:**
+- Replace hardcoded colors with ResourceLoader placeholders:
+  - Wall/floor tiles: load textures from pack (fallback to current BoxMesh colors)
+  - Party portraits: load portrait textures (fallback to current colored rectangles)
+  - Enemy display: load enemy sprite textures (fallback to current HP bar layout)
+- Audio hooks (data-only, no playback yet):
+  - Define music tracks per floor in dungeon data
+  - Define SFX triggers (step, attack, spell, chest open)
+  - ResourceLoader validates audio files exist at load time
+
+**Acceptance criteria:**
+- Current visuals unchanged when placeholders are used (colored rectangles)
+- Systems gracefully fall back to current behavior when texture files don't exist
+- DebugLog shows which resources loaded successfully and which fell back to placeholders
+
+### Task 5.4: Create SaveManager autoload
 
 **Files to create:** `scripts/core/save_manager.gd`
 **Files to modify:** `project.godot` (add autoload)
@@ -361,7 +439,7 @@ The project is a working Godot 4.4+ prototype with:
 - Game flags stored as Dictionary
 - Location stores: dungeon_id, floor, grid_pos, facing
 
-### Task 5.2: Save/Load UI
+### Task 5.5: Save/Load UI
 
 **Files to create:** `scenes/ui/save_load_menu.tscn`, `scripts/ui/save_load_menu.gd`
 

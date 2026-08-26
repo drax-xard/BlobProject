@@ -4,5 +4,42 @@
   "version": "0.1.0",
   "description": "Core game content for BlobProject",
   "author": "BlobProject Team",
-  "dependencies": []
+  "dependencies": [],
+  "assets": {
+    "textures": [
+      "wall_stone.png",
+      "wall_brick.png",
+      "floor_stone.png",
+      "floor_wood.png",
+      "stairs_up.png",
+      "stairs_down.png",
+      "chest_closed.png",
+      "chest_open.png",
+      "door_closed.png",
+      "door_open.png",
+      "portrait_warrior.png",
+      "portrait_mage.png",
+      "portrait_rogue.png",
+      "portrait_cleric.png",
+      "enemy_goblin.png",
+      "enemy_skeleton.png",
+      "enemy_slime.png",
+      "ui_frame.png"
+    ],
+    "audio": [
+      "music_explore.ogg",
+      "music_combat.ogg",
+      "music_menu.ogg",
+      "sfx_step.wav",
+      "sfx_sword_hit.wav",
+      "sfx_magic_cast.wav",
+      "sfx_chest_open.wav",
+      "sfx_door_open.wav",
+      "sfx_potion_use.wav",
+      "sfx_level_up.wav",
+      "amb_cave.ogg",
+      "amb_forest.ogg"
+    ],
+    "scenes": []
+  }
 }

@@ -134,11 +134,12 @@ func _build_grid_mesh() -> void:
 				add_child(floor_tile)
 				_dynamic_children.append(floor_tile)
 				if cell == DungeonGenerator.CELL_STAIRS_DOWN or cell == DungeonGenerator.CELL_STAIRS_UP:
-					var marker := _create_tile_marker(pos, Color(0.2, 0.8, 0.2))
+					var tex_path := "stairs_down.png" if cell == DungeonGenerator.CELL_STAIRS_DOWN else "stairs_up.png"
+					var marker := _create_tile_marker(pos, Color(0.2, 0.8, 0.2), tex_path)
 					add_child(marker)
 					_dynamic_children.append(marker)
 				elif cell == DungeonGenerator.CELL_CHEST:
-					var marker := _create_tile_marker(pos, Color(0.9, 0.7, 0.1))
+					var marker := _create_tile_marker(pos, Color(0.9, 0.7, 0.1), "chest_closed.png")
 					add_child(marker)
 					_dynamic_children.append(marker)
 
@@ -322,14 +323,22 @@ func use_stair() -> void:
 		DungeonGenerator.CELL_STAIRS_UP:
 			_transition_to_previous_floor()
 
-func _create_tile_marker(world_pos: Vector3, color: Color) -> MeshInstance3D:
+func _create_tile_marker(world_pos: Vector3, color: Color, texture_path: String = "") -> MeshInstance3D:
 	var marker := MeshInstance3D.new()
 	var box := BoxMesh.new()
 	box.size = Vector3(CELL_SIZE * 0.6, 0.2, CELL_SIZE * 0.6)
 	marker.mesh = box
 	marker.position = world_pos + Vector3(0.0, 0.05, 0.0)
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = color
+	if not texture_path.is_empty():
+		var tex := ResLoader.load_texture("base", texture_path)
+		if tex:
+			mat.albedo_texture = tex
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		else:
+			mat.albedo_color = color
+	else:
+		mat.albedo_color = color
 	mat.emission_enabled = true
 	mat.emission = color
 	mat.emission_energy_multiplier = 0.5
