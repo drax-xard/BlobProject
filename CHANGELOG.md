@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.7.2-alpha] - 2026-08-26
+
+### Added
+- **NPC billboard portraits** — NPCs render as Sprite3D billboards showing their portrait texture, always facing the camera
+- **Dialogue panel portrait** — NPC portrait displayed on the left side of the dialogue UI, loaded from NPC record
+
+### Fixed
+- **Portrait cropping** — Changed stretch mode from KEEP_ASPECT_COVERED to KEEP_ASPECT_CENTERED to prevent cropping
+- **NPC re-trigger** — `_last_interacted_cell` now clears when player moves to a different cell, allowing dialogue to re-trigger on return
+
 ## [0.7.1-alpha] - 2026-08-26
 
 ### Added
