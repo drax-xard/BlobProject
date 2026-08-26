@@ -43,7 +43,8 @@ func _build_ui() -> void:
 	vbox.add_child(hbox)
 	_portrait = TextureRect.new()
 	_portrait.custom_minimum_size = Vector2(80, 80)
-	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	hbox.add_child(_portrait)
 	var right_col := VBoxContainer.new()
 	right_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
