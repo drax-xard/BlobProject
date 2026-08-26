@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.5.0-alpha] - 2026-08-26
+
+### Added
+- **ResourceLoader** (`scripts/core/resource_loader.gd`) — Static class for loading and caching game resources from mod packs
+  - `load_texture()`, `load_audio()`, `load_scene()` with per-pack resolution
+  - `get_or_load()` for cached generic access
+  - Placeholder generation for missing resources (colored "MISSING" rectangles for textures, silent AudioStream for audio)
+  - Pack manifest loading and asset list queries via `get_asset_list()` and `has_asset()`
+  - Cache management: `clear_cache()`, `clear_pack()`
+- **Pack assets structure** — `packs/base/assets/{textures,audio,scenes}/` directories created
+- **Pack asset declarations** — `pack.json` extended with full asset list (18 textures, 12 audio, scenes)
+- **Stair/chest textures** — GridWorld special tile markers now load textures from pack via ResLoader, falling back to colored boxes
+- **Party portraits** — PartyDisplay loads class-specific portrait textures via ResLoader, falling back to colored rectangles
+
+### Changed
+- **Phase 5 expanded** — Development plan Phase 5 now includes resource loader (Tasks 5.1-5.3) alongside save/load (Tasks 5.4-5.5)
+
 ## [0.4.1-alpha] - 2026-08-26
 
 ### Fixed
