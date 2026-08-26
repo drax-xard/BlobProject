@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://main_scene"]
+[gd_scene load_steps=9 format=3 uid="uid://main_scene"]
 
 [ext_resource type="Script" path="res://scripts/core/turn_manager.gd" id="1_script"]
 [ext_resource type="Script" path="res://scripts/ui/main_layout.gd" id="2_layout"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://action_bar" path="res://scenes/ui/action_bar.tscn" id="5_scene"]
 [ext_resource type="PackedScene" uid="uid://grid_world" path="res://scenes/world/grid_world.tscn" id="6_scene"]
 [ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="7_inv"]
+[ext_resource type="Script" path="res://scripts/core/combat_manager.gd" id="8_combat"]
+[ext_resource type="PackedScene" path="res://scenes/ui/combat_ui.tscn" id="9_combat_ui"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -19,6 +21,9 @@ script = ExtResource("2_layout")
 
 [node name="TurnManager" type="Node" parent="."]
 script = ExtResource("1_script")
+
+[node name="CombatManager" type="Node" parent="."]
+script = ExtResource("8_combat")
 
 [node name="HSplitContainer" type="HSplitContainer" parent="."]
 layout_mode = 1
@@ -58,6 +63,8 @@ layout_mode = 2
 
 [node name="InventoryPanel" parent="." instance=ExtResource("7_inv")]
 
+[node name="CombatUI" parent="." instance=ExtResource("9_combat_ui")]
+
 [node name="VersionLabel" type="Label" parent="."]
 layout_mode = 0
 anchors_preset = 2
@@ -68,4 +75,4 @@ offset_top = -24.0
 offset_right = 200.0
 offset_bottom = -4.0
 grow_vertical = 0
-text = "BlobProject v0.2.4-alpha"
+text = "BlobProject v0.3.0-alpha"

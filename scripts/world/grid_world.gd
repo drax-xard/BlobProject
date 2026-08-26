@@ -13,6 +13,10 @@ var grid_height: int = 0
 var player_grid_pos: Vector2i = Vector2i.ZERO
 var player_facing: int = Facing.NORTH
 
+var _encounter_rate: float = 0.0
+var _encounter_tables: Dictionary = {}
+var _combat_manager: Node = null
+
 @onready var camera: Camera3D = $Camera3D
 
 var _dynamic_children: Array[Node] = []
@@ -58,7 +62,10 @@ func load_dungeon(dungeon_id: String, floor: int) -> void:
 		return
 	grid_width = int(w)
 	grid_height = int(h)
-	DebugLog.info("GridWorld: Loaded dungeon '%s' floor %d (%dx%d)" % [dungeon_id, floor, grid_width, grid_height])
+	_encounter_rate = float(fd.get("encounter_rate", 0.0))
+	_encounter_tables = dungeon_record.get("encounter_tables", {})
+	_combat_manager = get_tree().current_scene.get_node_or_null("CombatManager")
+	DebugLog.info("GridWorld: Loaded dungeon '%s' floor %d (%dx%d, encounter_rate=%.2f)" % [dungeon_id, floor, grid_width, grid_height, _encounter_rate])
 	_generate_border_grid()
 	_build_grid_mesh()
 	_place_player_at_start()
@@ -173,6 +180,7 @@ func try_move(_actor_index: int, direction: Vector2i) -> bool:
 	player_grid_pos = target_pos
 	_update_camera()
 	player_moved.emit(player_grid_pos)
+	_check_random_encounter()
 	return true
 
 func try_turn(_actor_index: int, turn_dir: int) -> bool:
@@ -187,3 +195,57 @@ func get_cell(grid_pos: Vector2i) -> int:
 	if grid_pos.y < 0 or grid_pos.y >= grid_height:
 		return 1
 	return grid_data[grid_pos.y][grid_pos.x]
+
+func _check_random_encounter() -> void:
+	if _encounter_rate <= 0.0:
+		return
+	if not _combat_manager:
+		_combat_manager = get_tree().current_scene.get_node_or_null("CombatManager")
+	if not _combat_manager:
+		return
+	if GameManager.current_state != GameManager.GameState.EXPLORING:
+		return
+	if randf() >= _encounter_rate:
+		return
+	var enemy_ids: Array[String] = _pick_encounter()
+	if enemy_ids.is_empty():
+		return
+	_combat_manager.start_encounter(enemy_ids)
+
+func _pick_encounter() -> Array[String]:
+	var result: Array[String] = []
+	var tier: String = _get_encounter_tier()
+	var table: Variant = _encounter_tables.get(tier, [])
+	if not table is Array or table.is_empty():
+		table = _encounter_tables.get("easy", [])
+	if not table is Array or table.is_empty():
+		return result
+	var total_weight: int = 0
+	for entry in table:
+		if entry is Dictionary:
+			total_weight += int(entry.get("weight", 1))
+	if total_weight <= 0:
+		return result
+	var roll: int = randi() % total_weight
+	var cumulative: int = 0
+	for entry in table:
+		if not entry is Dictionary:
+			continue
+		cumulative += int(entry.get("weight", 1))
+		if roll < cumulative:
+			var enemies: Variant = entry.get("enemies", [])
+			if enemies is Array:
+				for eid in enemies:
+					if eid is String:
+						result.append(eid)
+			break
+	return result
+
+func _get_encounter_tier() -> String:
+	match GameManager.current_floor:
+		1:
+			return "easy"
+		2:
+			return "medium"
+		_:
+			return "hard"

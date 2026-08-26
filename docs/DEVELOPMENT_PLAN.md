@@ -6,23 +6,24 @@
 
 ---
 
-## Current State (v0.2.1-alpha)
+## Current State (v0.3.0-alpha)
 
 The project is a working Godot 4.4+ prototype with:
 - 3D first-person viewport with camera, lighting, and grid rendering
 - Turn-based movement (forward, backward, strafe, turn) via keyboard and UI buttons
-- 4-character party display
+- 4-character party display with stats derived from class data
 - Configurable layout ratios via `settings.cfg`
 - JSON data loading system (`DataRegistry`) with classes, items, spells, enemies, dungeons
+- Full inventory and equipment system with UI overlay
+- Turn-based combat with enemy AI, spell casting, items, and flee
+- Random encounters with weighted encounter tables
 - Autoloads: `SettingsManager`, `GameManager`, `DataRegistry`
 
 **What does NOT work yet:**
-- Dungeon data is unused — grid is hardcoded 8x8 test grid
-- No combat system (GameState.COMBAT exists but nothing triggers it)
-- No inventory (GameState.INVENTORY exists but unreachable)
+- No procedural dungeon generation (uses hardcoded border grid)
 - No save/load
 - No NPC interaction or dialogue
-- Default party is hardcoded, not loaded from data
+- No shop/merchant system
 
 ---
 
@@ -155,7 +156,7 @@ The project is a working Godot 4.4+ prototype with:
 
 ---
 
-## Phase 3: Combat System
+## Phase 3: Combat System ✅ COMPLETE
 
 > **Goal:** Random encounters trigger turn-based combat.
 > **Depends on:** Phase 1 (dungeon data, enemy records), Phase 2 (inventory for loot/items in combat).

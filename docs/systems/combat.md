@@ -1,7 +1,6 @@
 # Combat System
 
-> **Design Document -- Not Yet Implemented**
-> This document describes the planned combat system. The `GameState.COMBAT` state exists in `GameManager` but no combat logic is currently in the codebase.
+> **Status:** Implemented (v0.3.0-alpha)
 
 ## Overview
 
@@ -150,30 +149,30 @@ The party is defined in `GameManager._init_default_party()` (`scripts/core/game_
 
 Each character has class-specific spells, skills, and starting equipment stored in their party dictionary.
 
-## Enemy AI (Planned)
+## Enemy AI
 
-Simple behavior patterns assigned per enemy type:
+Simple behavior: targets the party member with lowest current HP.
 
 | Pattern | Behavior |
 |---------|----------|
-| **Aggressive** | Always attacks the party member with lowest current HP |
-| **Defensive** | Attacks a random party member; 20% chance to defend instead |
+| **Default** | Attacks the party member with lowest current HP |
+| **Defensive** _(future)_ | 20% chance to defend instead |
 | **Healer** _(future)_ | Heals wounded allies; attacks if all allies are full HP |
-| **Boss** | Uses special attacks on a rotation; phases at HP thresholds |
+| **Boss** _(future)_ | Uses special attacks on a rotation; phases at HP thresholds |
 
-Enemy definitions would include: name, HP, stats, XP reward, gold reward, loot table, AI pattern.
+Enemy definitions include: name, HP, stats, XP reward, gold reward, loot table.
 
-## Combat UI (Planned)
+## Combat UI
 
 | Area | Content |
 |------|---------|
-| **Top** | Enemy display area -- sprite/model for each enemy, HP bar |
-| **Middle** | Battle viewport (3D view or combat scene) |
-| **Bottom-left** | Party HP/MP display for all 4 members |
-| **Bottom-right** | Command menu -- per-character action selection |
-| **Overlay** | Battle log -- scrolling text of action results |
+| **Top** | Enemy list with HP bars and current/max HP labels |
+| **Middle** | Scrolling combat log |
+| **Bottom** | Per-character command selection (Attack, Magic, Defend, Item, Flee) |
+| **Target panel** | Appears when selecting targets for attacks, spells, or items |
+| **Result panel** | Victory/defeat screen with XP/gold summary and Continue button |
 
-The combat UI would replace the exploration `ActionBar` during `COMBAT` state. The existing state-based UI switching in `TurnManager._input()` provides the hook for this transition.
+The combat UI is a full-screen overlay shown during `COMBAT` state. It blocks mouse and keyboard input to underlying UI.
 
 ## Integration Points
 
@@ -185,12 +184,11 @@ The combat UI would replace the exploration `ActionBar` during `COMBAT` state. T
 - `GameManager.damage_party_member()` and `heal_party_member()` already exist
 - `GameManager.is_party_alive()` checks if any member has HP > 0
 
-### Needed Additions
+### Implemented (v0.3.0-alpha)
 
-- Encounter system (per-floor encounter tables, trigger logic)
-- Enemy data definitions (stats, AI, loot)
-- Combat state machine (command phase, resolution phase, end check)
-- Combat UI scene and scripts
-- Spell/equipment data registry
-- Damage calculation functions
-- XP/loot/level-up logic
+- `CombatManager` (`scripts/core/combat_manager.gd`) — central combat coordinator
+- `CombatUI` (`scenes/ui/combat_ui.tscn`, `scripts/ui/combat_ui.gd`) — combat overlay
+- Encounter trigger in `GridWorld.try_move()` using floor encounter_rate and tables
+- Physical and magical damage formulas
+- Enemy AI (lowest HP targeting)
+- XP/gold/loot distribution and level-up

@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.3.0-alpha] - 2026-08-25
+
+### Added
+- **Combat system** — Full turn-based combat with enemy AI, initiative order, and XP/gold rewards
+- **CombatManager** (`scripts/core/combat_manager.gd`) — Central combat coordinator:
+  - Agility-based turn order for party and enemies
+  - Physical damage formula: `strength × weapon_mult − defense × armor_mult ± 2`, minimum 1
+  - Critical hits: `agility × 0.5%` chance, 1.5× damage
+  - Defending halves incoming damage for one round
+  - Spell casting with MP cost validation and school-based effects (destruction/holy = damage, restoration = healing)
+  - Item usage from inventory during combat
+  - Flee mechanic: success chance based on party vs enemy agility
+  - Enemy AI: targets party member with lowest HP
+  - Level-up on XP gain with stat growth from class data
+  - Victory: distribute XP, gold, and random loot from enemy loot tables
+- **Combat actions** — Attack, Defend, Magic, Item, Flee with precondition validation
+- **Encounter trigger** — Random encounters on movement using dungeon floor's `encounter_rate` and weighted `encounter_tables` (easy/medium/hard tiers by floor)
+- **Combat UI** (`scenes/ui/combat_ui.tscn`, `scripts/ui/combat_ui.gd`) — Full-screen overlay with:
+  - Enemy list with live HP bars
+  - Scrolling combat log
+  - Per-character command selection (Attack, Magic, Defend, Item, Flee)
+  - Target selection for attacks, spells, and items
+  - Spell selection when character knows multiple spells
+  - MP cost validation before casting
+  - Victory/defeat screen with XP/gold summary
+
+### Changed
+- GridWorld `try_move()` now checks for random encounters after each successful movement
+- `encounter_ended` signal no longer auto-transitions game state — CombatUI handles state transition on "Continue" click
+
 ## [0.2.4-alpha] - 2026-08-25
 
 ### Added
