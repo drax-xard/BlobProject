@@ -35,6 +35,10 @@ func _ready() -> void:
 
 func _on_game_loaded() -> void:
 	load_dungeon(GameManager.current_dungeon_id, GameManager.current_floor)
+	player_grid_pos = GameManager.saved_player_pos
+	player_facing = GameManager.saved_player_facing
+	_update_camera()
+	_notify_stair_state()
 
 func _load_dungeon_for_game() -> void:
 	if GameManager.current_dungeon_id.is_empty():
@@ -214,6 +218,7 @@ func try_move(_actor_index: int, direction: Vector2i) -> bool:
 	if not is_walkable(target_pos):
 		return false
 	player_grid_pos = target_pos
+	_sync_position_to_game_manager()
 	_update_camera()
 	player_moved.emit(player_grid_pos)
 	_check_random_encounter()
@@ -223,9 +228,14 @@ func try_move(_actor_index: int, direction: Vector2i) -> bool:
 
 func try_turn(_actor_index: int, turn_dir: int) -> bool:
 	player_facing = posmod(player_facing + turn_dir, 4)
+	_sync_position_to_game_manager()
 	_update_camera()
 	player_turned.emit(player_facing)
 	return true
+
+func _sync_position_to_game_manager() -> void:
+	GameManager.saved_player_pos = player_grid_pos
+	GameManager.saved_player_facing = player_facing
 
 func get_cell(grid_pos: Vector2i) -> int:
 	if grid_pos.x < 0 or grid_pos.x >= grid_width:

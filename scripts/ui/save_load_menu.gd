@@ -13,6 +13,14 @@ var _confirm_label: Label
 func _ready() -> void:
 	visible = false
 	_build_ui()
+	GameManager.game_loaded.connect(_on_game_loaded)
+	GameManager.game_state_changed.connect(_on_game_state_changed)
+
+func _on_game_state_changed(new_state: GameManager.GameState) -> void:
+	if new_state == GameManager.GameState.PAUSED:
+		open_pause_menu()
+	elif visible and new_state != GameManager.GameState.PAUSED:
+		close()
 
 func _build_ui() -> void:
 	anchors_preset = PRESET_FULL_RECT
@@ -45,7 +53,6 @@ func _build_ui() -> void:
 	_slot_list = VBoxContainer.new()
 	_slot_list.add_theme_constant_override("separation", 4)
 	vbox.add_child(_slot_list)
-	_build_slot_list()
 	_action_panel = VBoxContainer.new()
 	_action_panel.visible = false
 	_action_panel.add_theme_constant_override("separation", 8)
@@ -95,12 +102,18 @@ func _build_slot_list() -> void:
 		else:
 			var names: String = ", ".join(slot_data.get("party_names", []))
 			info_label.text = "Lv.%d %s | Floor %d | %d gold | %s" % [
-				slot_data.get("floor", 1), names,
+				slot_data.get("party_level", 1), names,
 				slot_data.get("floor", 1), slot_data.get("gold", 0),
 				slot_data.get("timestamp", "").substr(0, 10),
 			]
 		hbox.add_child(info_label)
 		_info_labels.append(info_label)
+		if not slot_data.is_empty():
+			var del_btn := Button.new()
+			del_btn.text = "X"
+			del_btn.custom_minimum_size = Vector2(30, 40)
+			del_btn.pressed.connect(_on_delete_pressed.bind(i))
+			hbox.add_child(del_btn)
 
 func open_save_mode() -> void:
 	_mode = "save"
@@ -117,6 +130,42 @@ func open_load_mode() -> void:
 	_slot_list.visible = true
 	_build_slot_list()
 	visible = true
+
+func open_pause_menu() -> void:
+	_mode = "pause"
+	_title_label.text = "Paused"
+	_action_panel.visible = false
+	_slot_list.visible = false
+	_build_pause_buttons()
+	visible = true
+
+func _build_pause_buttons() -> void:
+	for child in _slot_list.get_children():
+		child.queue_free()
+	var resume_btn := Button.new()
+	resume_btn.text = "Resume"
+	resume_btn.custom_minimum_size = Vector2(200, 40)
+	resume_btn.pressed.connect(_on_resume_pressed)
+	_slot_list.add_child(resume_btn)
+	var save_btn := Button.new()
+	save_btn.text = "Save Game"
+	save_btn.custom_minimum_size = Vector2(200, 40)
+	save_btn.pressed.connect(_on_pause_save_pressed)
+	_slot_list.add_child(save_btn)
+	var load_btn := Button.new()
+	load_btn.text = "Load Game"
+	load_btn.custom_minimum_size = Vector2(200, 40)
+	load_btn.pressed.connect(_on_pause_load_pressed)
+	_slot_list.add_child(load_btn)
+
+func _on_resume_pressed() -> void:
+	GameManager.current_state = GameManager.GameState.EXPLORING
+
+func _on_pause_save_pressed() -> void:
+	open_save_mode()
+
+func _on_pause_load_pressed() -> void:
+	open_load_mode()
 
 func close() -> void:
 	visible = false
@@ -140,6 +189,10 @@ func _on_slot_pressed(slot: int) -> void:
 			else:
 				GameManager.game_event.emit("Slot %d is empty" % (slot + 1), Color(1.0, 0.5, 0.5))
 
+func _on_delete_pressed(slot: int) -> void:
+	_selected_slot = slot
+	_show_confirm("Delete", "Delete save in Slot %d?" % (slot + 1))
+
 func _show_confirm(title: String, text: String) -> void:
 	_slot_list.visible = false
 	_action_panel.visible = true
@@ -153,21 +206,37 @@ func _on_confirm_pressed() -> void:
 		"save":
 			SaveManager.save_game(_selected_slot)
 			GameManager.game_event.emit("Game saved to Slot %d" % (_selected_slot + 1), Color(0.5, 1.0, 0.5))
+			_action_panel.visible = false
+			_slot_list.visible = true
+			_build_slot_list()
 		"load":
 			SaveManager.load_game(_selected_slot)
 			GameManager.game_event.emit("Game loaded from Slot %d" % (_selected_slot + 1), Color(0.5, 1.0, 0.5))
-	close()
+			close()
+		"delete":
+			SaveManager.delete_save(_selected_slot)
+			GameManager.game_event.emit("Deleted save Slot %d" % (_selected_slot + 1), Color(1.0, 0.5, 0.5))
+			_action_panel.visible = false
+			_slot_list.visible = true
+			_build_slot_list()
+	_selected_slot = -1
 
 func _on_cancel_pressed() -> void:
 	_action_panel.visible = false
 	_slot_list.visible = true
 	_selected_slot = -1
 
+func _on_game_loaded() -> void:
+	close()
+
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("pause_game"):
-		if visible:
-			close()
-			get_viewport().set_input_as_handled()
-		elif GameManager.current_state == GameManager.GameState.EXPLORING:
-			open_save_mode()
-			get_viewport().set_input_as_handled()
+	if not visible:
+		return
+	if not event.is_action_pressed("pause_game"):
+		return
+	get_viewport().set_input_as_handled()
+	match _mode:
+		"pause":
+			GameManager.current_state = GameManager.GameState.EXPLORING
+		"save", "load", "delete":
+			open_pause_menu()

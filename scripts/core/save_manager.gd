@@ -84,6 +84,7 @@ func get_save_info(slot: int) -> Dictionary:
 		"gold": data.get("gold", 0),
 		"party_size": data.get("party", []).size(),
 		"party_names": _extract_party_names(data.get("party", [])),
+		"party_level": _extract_party_level(data.get("party", [])),
 	}
 
 func get_all_save_slots() -> Array[Dictionary]:
@@ -102,10 +103,8 @@ func _build_save_data() -> Dictionary:
 	data["dungeon_id"] = GameManager.current_dungeon_id
 	data["floor"] = GameManager.current_floor
 	data["turn_count"] = GameManager.turn_count
-	var grid_world := _get_grid_world()
-	if grid_world:
-		data["player_grid_pos"] = {"x": grid_world.player_grid_pos.x, "y": grid_world.player_grid_pos.y}
-		data["player_facing"] = grid_world.player_facing
+	data["player_grid_pos"] = {"x": GameManager.saved_player_pos.x, "y": GameManager.saved_player_pos.y}
+	data["player_facing"] = GameManager.saved_player_facing
 	return data
 
 func _apply_save_data(data: Dictionary) -> void:
@@ -115,30 +114,15 @@ func _apply_save_data(data: Dictionary) -> void:
 	GameManager.current_dungeon_id = data.get("dungeon_id", "")
 	GameManager.current_floor = data.get("floor", 1)
 	GameManager.turn_count = data.get("turn_count", 0)
+	var pos_data: Dictionary = data.get("player_grid_pos", {"x": 0, "y": 0})
+	GameManager.saved_player_pos = Vector2i(pos_data.get("x", 0), pos_data.get("y", 0))
+	GameManager.saved_player_facing = data.get("player_facing", 0)
 	GameManager.current_state = GameManager.GameState.EXPLORING
-	var grid_world := _get_grid_world()
-	if grid_world:
-		var pos_data: Dictionary = data.get("player_grid_pos", {"x": 0, "y": 0})
-		grid_world.player_grid_pos = Vector2i(pos_data.get("x", 0), pos_data.get("y", 0))
-		grid_world.player_facing = data.get("player_facing", 0)
-		grid_world.load_dungeon(GameManager.current_dungeon_id, GameManager.current_floor)
 	GameManager.party_changed.emit()
 	GameManager.inventory_changed.emit()
 	GameManager.game_loaded.emit()
 
 # --- Helpers ---
-
-func _get_grid_world() -> Node:
-	var scene: Node = get_tree().current_scene
-	if not scene:
-		return null
-	var viewport: SubViewportContainer = scene.find_child("ViewportFrame", true, false)
-	if not viewport:
-		return null
-	var sub_viewport: SubViewport = viewport.get_node_or_null("SubViewport")
-	if not sub_viewport:
-		return null
-	return sub_viewport.get_node_or_null("World")
 
 func _slot_path(slot: int) -> String:
 	return SAVE_DIR.path_join("save_%d.json" % slot)
@@ -149,3 +133,9 @@ func _extract_party_names(party: Array) -> Array[String]:
 		if member is Dictionary:
 			names.append(member.get("name", "?"))
 	return names
+
+func _extract_party_level(party: Array) -> int:
+	for member in party:
+		if member is Dictionary:
+			return int(member.get("level", 1))
+	return 1

@@ -123,8 +123,9 @@ static func clear_cache() -> void:
 
 static func clear_pack(pack_id: String) -> void:
 	var keys_to_remove: Array[String] = []
+	var prefix := ":%s:" % pack_id
 	for key in _cache:
-		if key.ends_with(":%s:" % pack_id) or (":" in key and key.split(":")[1] == pack_id):
+		if key.contains(prefix):
 			keys_to_remove.append(key)
 	for key in keys_to_remove:
 		_cache.erase(key)

@@ -6,6 +6,7 @@ signal party_changed()
 signal inventory_changed()
 signal game_event(text: String, color: Color)
 signal game_loaded()
+signal game_state_changed(new_state: GameState)
 
 enum GameState {
 	MENU,
@@ -16,10 +17,16 @@ enum GameState {
 	PAUSED,
 }
 
-var current_state: GameState = GameState.MENU
+var current_state: GameState = GameState.MENU:
+	set(value):
+		if current_state != value:
+			current_state = value
+			game_state_changed.emit(value)
 var current_dungeon_id: String = ""
 var current_floor: int = 1
 var turn_count: int = 0
+var saved_player_pos: Vector2i = Vector2i.ZERO
+var saved_player_facing: int = 0
 
 var party: Array[Dictionary] = []
 var party_size: int:
