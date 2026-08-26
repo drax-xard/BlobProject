@@ -162,10 +162,12 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 
 func _process(_delta: float) -> void:
-	visible = GameManager.current_state == GameManager.GameState.INVENTORY
-	if visible and _party_buttons.get_child_count() == 0:
+	var should_show: bool = GameManager.current_state == GameManager.GameState.INVENTORY
+	if should_show and not visible:
+		_selected_item_idx = 0
 		_build_party_buttons()
 		_refresh()
+	visible = should_show
 
 func _build_party_buttons() -> void:
 	for child in _party_buttons.get_children():
@@ -307,8 +309,11 @@ func _update_info_label() -> void:
 func _on_item_pressed(index: int) -> void:
 	_selected_item_idx = index
 	_refresh_item_selection()
+	_update_info_label()
 
 func _on_unequip_pressed(slot: String) -> void:
+	var char_name: String = GameManager.party[_selected_char].get("name", "?")
+	DebugLog.info("InventoryPanel: Unequipping %s from %s" % [slot, char_name])
 	var success: bool = GameManager.unequip_item(_selected_char, slot)
 	if success:
 		_info_label.text = "Unequipped from %s" % slot.replace("_", " ")
@@ -318,6 +323,7 @@ func _on_unequip_pressed(slot: String) -> void:
 
 func _on_equip_pressed() -> void:
 	if _selected_item_idx < 0 or _selected_item_idx >= _item_list.size():
+		_info_label.text = "Select an item first"
 		return
 	var entry: Dictionary = _item_list[_selected_item_idx]
 	var item_record: Dictionary = DataRegistry.get_record(entry["id"])
@@ -328,10 +334,14 @@ func _on_equip_pressed() -> void:
 	if item_type != "weapon" and item_type != "armor":
 		_info_label.text = "Cannot equip '%s'" % item_record.get("name", entry["id"])
 		return
+	var char_name: String = GameManager.party[_selected_char].get("name", "?")
+	DebugLog.info("InventoryPanel: Equipping '%s' on %s" % [entry["id"], char_name])
 	var success: bool = GameManager.equip_item(_selected_char, entry["id"])
 	if success:
-		_selected_item_idx = clampi(_selected_item_idx, 0, _item_list.size() - 1)
+		_info_label.text = "Equipped '%s' on %s" % [item_record.get("name", entry["id"]), char_name]
 		_refresh()
+	else:
+		_info_label.text = "Failed to equip '%s'" % item_record.get("name", entry["id"])
 
 func _on_use_pressed() -> void:
 	if _selected_item_idx < 0 or _selected_item_idx >= _item_list.size():
