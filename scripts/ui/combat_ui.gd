@@ -428,8 +428,11 @@ func _on_log_entry(text: String) -> void:
 	label.add_theme_font_size_override("font_size", 12)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_log_container.add_child(label)
-	await get_tree().process_frame
-	_log_scroll.scroll_vertical = int(_log_scroll.get_v_scroll_bar().max_value)
+	_scroll_log_to_bottom.call_deferred()
+
+func _scroll_log_to_bottom() -> void:
+	if _log_scroll and _log_scroll.get_v_scroll_bar():
+		_log_scroll.scroll_vertical = int(_log_scroll.get_v_scroll_bar().max_value)
 
 func _clear_log() -> void:
 	if _log_container:

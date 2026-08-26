@@ -9,7 +9,6 @@ signal combat_log_entry(text: String)
 var encounter_active: bool = false
 var enemies: Array[Dictionary] = []
 var turn_order: Array[Dictionary] = []
-var current_turn_idx: int = 0
 var pending_player_actions: Array[Dictionary] = []
 var waiting_for_player_input: bool = false
 var current_command_char_idx: int = 0
@@ -87,6 +86,7 @@ func _turn_order_names() -> String:
 func begin_player_command_phase() -> void:
 	pending_player_actions.clear()
 	current_command_char_idx = 0
+	clear_defending()
 	_find_next_living_party_member()
 
 func _find_next_living_party_member() -> void:
@@ -209,7 +209,6 @@ func _resolve_party_action(action: Dictionary) -> void:
 			if member["mp"] < mp_cost:
 				_log("%s doesn't have enough MP for %s" % [member["name"], spell_record.get("name", spell_id)])
 				return
-			member["mp"] -= mp_cost
 			var school: String = spell_record.get("school", "")
 			if school == "destruction" or school == "holy":
 				if target_idx < 0 or target_idx >= enemies.size():
@@ -217,6 +216,7 @@ func _resolve_party_action(action: Dictionary) -> void:
 				var enemy: Dictionary = enemies[target_idx]
 				if enemy["hp"] <= 0:
 					return
+				member["mp"] -= mp_cost
 				var spell_dmg: int = _calculate_spell_damage(member, spell_record)
 				enemy["hp"] = maxi(enemy["hp"] - spell_dmg, 0)
 				var msg: String = "%s casts %s on %s for %d damage" % [member["name"], spell_record.get("name", spell_id), enemy["name"], spell_dmg]
@@ -230,6 +230,7 @@ func _resolve_party_action(action: Dictionary) -> void:
 				var heal_amount: int = randi_range(heal_min, heal_max)
 				var ally_idx: int = action["params"].get("target", char_idx)
 				if ally_idx >= 0 and ally_idx < GameManager.party.size():
+					member["mp"] -= mp_cost
 					GameManager.heal_party_member(ally_idx, heal_amount)
 					var ally_name: String = GameManager.party[ally_idx]["name"]
 					_log("%s casts %s on %s, restoring %d HP" % [member["name"], spell_record.get("name", spell_id), ally_name, heal_amount])
