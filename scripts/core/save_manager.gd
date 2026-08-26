@@ -107,6 +107,8 @@ func _build_save_data() -> Dictionary:
 	data["turn_count"] = GameManager.turn_count
 	data["player_grid_pos"] = {"x": GameManager.saved_player_pos.x, "y": GameManager.saved_player_pos.y}
 	data["player_facing"] = GameManager.saved_player_facing
+	data["game_flags"] = GameManager.game_flags.duplicate()
+	data["quests"] = GameManager.quests.duplicate(true)
 	return data
 
 func _apply_save_data(data: Dictionary) -> void:
@@ -119,6 +121,8 @@ func _apply_save_data(data: Dictionary) -> void:
 	var pos_data: Dictionary = data.get("player_grid_pos", {"x": 0, "y": 0})
 	GameManager.saved_player_pos = Vector2i(pos_data.get("x", 0), pos_data.get("y", 0))
 	GameManager.saved_player_facing = data.get("player_facing", 0)
+	GameManager.game_flags = data.get("game_flags", {})
+	GameManager.quests = data.get("quests", {})
 	GameManager.current_state = GameManager.GameState.EXPLORING
 	GameManager.party_changed.emit()
 	GameManager.inventory_changed.emit()

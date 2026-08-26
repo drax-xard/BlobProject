@@ -1,0 +1,45 @@
+[
+  {
+    "id": "npc_blacksmith",
+    "name": "Gareth the Blacksmith",
+    "type": "npc",
+    "location": "dungeon_01",
+    "portrait": "portrait_blacksmith.png",
+    "dialogue_tree": {
+      "start": {
+        "text": "Welcome, traveler! I forge the finest blades in these parts. Looking to buy, or just passing through?",
+        "choices": [
+          { "text": "Show me your wares.", "next": "shop" },
+          { "text": "What can you tell me about this place?", "next": "info" },
+          { "text": "Just passing through. Goodbye.", "next": null }
+        ]
+      },
+      "shop": {
+        "text": "Here's what I've got. Prices are fair — I promise.",
+        "choices": [
+          { "text": "[Return]", "next": "start" }
+        ],
+        "effects": [
+          { "open_shop": "blacksmith_shop" }
+        ]
+      },
+      "info": {
+        "text": "These dungeons hold old treasures... and old dangers. The deeper you go, the worse it gets. But if you've got the guts, there's gold to be found.",
+        "choices": [
+          { "text": "Thanks for the warning.", "next": "start" },
+          { "text": "Sounds dangerous. Any tips?", "next": "tips" }
+        ]
+      },
+      "tips": {
+        "text": "Watch your step. The stairs aren't always where you expect them. And conserve your potions — you'll need them.",
+        "choices": [
+          { "text": "I'll keep that in mind.", "next": "start" }
+        ],
+        "effects": [
+          { "set_flag": "met_blacksmith" }
+        ]
+      }
+    },
+    "shop_inventory": ["sword_iron", "sword_steel", "armor_leather", "armor_chain", "shield_wood", "potion_health", "potion_mana"]
+  }
+]

@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/combat_ui.tscn" id="9_combat_ui"]
 [ext_resource type="PackedScene" path="res://scenes/ui/game_log.tscn" id="10_log"]
 [ext_resource type="PackedScene" path="res://scenes/ui/save_load_menu.tscn" id="11_save"]
+[ext_resource type="PackedScene" path="res://scenes/ui/dialogue_panel.tscn" id="12_dialogue"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -90,3 +91,5 @@ grow_vertical = 0
 text = "BlobProject v0.6.1-alpha"
 
 [node name="SaveLoadMenu" parent="." instance=ExtResource("11_save")]
+
+[node name="DialoguePanel" parent="." instance=ExtResource("12_dialogue")]

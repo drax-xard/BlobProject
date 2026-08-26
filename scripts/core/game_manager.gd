@@ -35,6 +35,8 @@ var party_size: int:
 
 var inventory: Array = []
 var gold: int = 0
+var game_flags: Dictionary = {}
+var quests: Dictionary = {}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -289,3 +291,37 @@ func get_version() -> String:
 	if version_file:
 		return version_file.get_as_text().strip_edges()
 	return "unknown"
+
+# --- Game Flags ---
+
+func set_flag(flag: String, value: Variant = true) -> void:
+	game_flags[flag] = value
+	DebugLog.info("GameManager: Flag '%s' set to %s" % [flag, value])
+
+func has_flag(flag: String) -> bool:
+	return game_flags.has(flag) and game_flags[flag] != false
+
+func get_flag(flag: String, default: Variant = false) -> Variant:
+	return game_flags.get(flag, default)
+
+# --- Quests ---
+
+func start_quest(quest_id: String) -> void:
+	if quests.has(quest_id):
+		DebugLog.warn("GameManager: Quest '%s' already started" % quest_id)
+		return
+	quests[quest_id] = {"started": true, "completed": false}
+	DebugLog.info("GameManager: Quest '%s' started" % quest_id)
+
+func complete_quest(quest_id: String) -> void:
+	if not quests.has(quest_id):
+		DebugLog.warn("GameManager: Quest '%s' not found" % quest_id)
+		return
+	quests[quest_id]["completed"] = true
+	DebugLog.info("GameManager: Quest '%s' completed" % quest_id)
+
+func is_quest_complete(quest_id: String) -> bool:
+	return quests.has(quest_id) and quests[quest_id].get("completed", false)
+
+func is_quest_started(quest_id: String) -> bool:
+	return quests.has(quest_id)

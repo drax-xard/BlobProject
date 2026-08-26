@@ -11,7 +11,7 @@ func _ready() -> void:
 
 func load_all_data() -> void:
 	DebugLog.info("DataRegistry: Starting data load from %s" % _base_pack_path)
-	var categories := ["items", "enemies", "classes", "dungeons", "spells"]
+	var categories := ["items", "enemies", "classes", "dungeons", "spells", "npcs"]
 	for category in categories:
 		_load_category(category)
 	DebugLog.info("DataRegistry: Loaded %d records total" % _cache.size())
@@ -78,6 +78,8 @@ func _validate_record(record: Dictionary) -> void:
 			_validate_enemy_record(record, id)
 		"dungeon":
 			_validate_dungeon_record(record, id)
+		"npc":
+			_validate_npc_record(record, id)
 
 func _validate_class_record(record: Dictionary, id: String) -> void:
 	var required := ["hp", "mp", "strength", "defense", "vitality", "energy", "agility", "luck"]
@@ -121,6 +123,18 @@ func _validate_dungeon_record(record: Dictionary, id: String) -> void:
 		for key in ["width", "height", "encounter_rate"]:
 			if not fd.has(key):
 				DebugLog.data_issue(id, "floor_data[%d].%s" % [i, key], "varies", "missing")
+
+func _validate_npc_record(record: Dictionary, id: String) -> void:
+	if not record.has("dialogue_tree"):
+		DebugLog.data_issue(id, "dialogue_tree", "Dictionary", "missing")
+		return
+	var tree: Dictionary = record["dialogue_tree"]
+	if not tree.has("start"):
+		DebugLog.data_issue(id, "dialogue_tree.start", "Dictionary", "missing")
+	if record.has("shop_inventory"):
+		var items: Variant = record["shop_inventory"]
+		if not items is Array:
+			DebugLog.data_issue(id, "shop_inventory", "Array", type_string(typeof(items)))
 
 func get_record(record_id: String) -> Dictionary:
 	if _cache.has(record_id):
