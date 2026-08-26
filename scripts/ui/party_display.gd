@@ -50,7 +50,7 @@ func _set_portrait_texture(portrait: TextureRect, index: int) -> void:
 	]
 	var fallback_color: Color = colors[index] if index < colors.size() else Color.GRAY
 	if index < GameManager.party.size():
-		var member := GameManager.party[index]
+		var member: Dictionary = GameManager.party[index]
 		var class_id: String = member.get("class_id", "")
 		if not class_id.is_empty():
 			var tex := ResLoader.load_texture("base", "portrait_%s.png" % class_id)
@@ -76,7 +76,7 @@ func _refresh_member(index: int) -> void:
 		panel.visible = false
 		return
 	panel.visible = true
-	var member := GameManager.party[index]
+	var member: Dictionary = GameManager.party[index]
 	var hbox := panel.get_child(0) as HBoxContainer
 	var portrait := hbox.get_child(0) as TextureRect
 	var info := hbox.get_child(1) as VBoxContainer
