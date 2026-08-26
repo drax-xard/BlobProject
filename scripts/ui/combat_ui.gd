@@ -416,6 +416,7 @@ func _submit_pending_action() -> void:
 	if not _combat_manager:
 		return
 	_target_panel.visible = false
+	_command_panel.visible = true
 	_combat_manager.submit_player_action(_pending_action_type, _pending_action_params)
 	_pending_action_type = ""
 	_pending_action_params = {}
