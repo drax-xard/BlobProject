@@ -7,7 +7,7 @@ var _cache: Dictionary = {}
 var _base_pack_path: String = "res://packs/base/records"
 
 func _ready() -> void:
-	pass
+	call_deferred("load_all_data")
 
 func load_all_data() -> void:
 	var categories := ["items", "enemies", "classes", "dungeons", "spells"]

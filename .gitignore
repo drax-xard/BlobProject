@@ -3,6 +3,12 @@
 *.import
 export_presets.cfg
 
+# Godot generated files
+*.uid
+
+# User settings (machine-specific)
+settings.cfg
+
 # Builds
 builds/
 export/

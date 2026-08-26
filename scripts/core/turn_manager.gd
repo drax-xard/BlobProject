@@ -7,15 +7,28 @@ var is_turn_active: bool = false
 var pending_actions: Array[Action] = []
 
 func _input(event: InputEvent) -> void:
+	if not (event is InputEventKey and event.pressed):
+		return
+
+	# Pause toggle — works from most states
+	if event.is_action_pressed("pause_game"):
+		_handle_pause()
+		return
+
+	# Inventory toggle — works from EXPLORING and INVENTORY
+	if event.is_action_pressed("open_inventory"):
+		_handle_inventory_toggle()
+		return
+
+	# Movement — only during EXPLORING
 	if GameManager.current_state != GameManager.GameState.EXPLORING:
 		return
 	if is_turn_active:
 		return
 
-	if event is InputEventKey and event.pressed:
-		var action := _resolve_input(event)
-		if action:
-			_process_player_action(action)
+	var action := _resolve_input(event)
+	if action:
+		_process_player_action(action)
 
 func _resolve_input(event: InputEventKey) -> Action:
 	if event.is_action_pressed("move_forward"):
@@ -51,3 +64,17 @@ func process_ui_action(action: Action) -> void:
 func _turn_ended() -> void:
 	turn_processed.emit(GameManager.turn_count)
 	is_turn_active = false
+
+func _handle_pause() -> void:
+	var state := GameManager.current_state
+	if state == GameManager.GameState.PAUSED:
+		GameManager.current_state = GameManager.GameState.EXPLORING
+	elif state == GameManager.GameState.EXPLORING or state == GameManager.GameState.INVENTORY:
+		GameManager.current_state = GameManager.GameState.PAUSED
+
+func _handle_inventory_toggle() -> void:
+	var state := GameManager.current_state
+	if state == GameManager.GameState.EXPLORING:
+		GameManager.current_state = GameManager.GameState.INVENTORY
+	elif state == GameManager.GameState.INVENTORY:
+		GameManager.current_state = GameManager.GameState.EXPLORING
