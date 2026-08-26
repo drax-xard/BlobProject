@@ -184,10 +184,14 @@ func _build_grid_mesh() -> void:
 					add_child(marker)
 					_dynamic_children.append(marker)
 				elif cell == DungeonGenerator.CELL_NPC:
-					var marker := _create_tile_marker(pos, Color(0.3, 0.7, 1.0))
-					marker.position.y = pos.y + 0.6
-					add_child(marker)
-					_dynamic_children.append(marker)
+					var npc_key := Vector2i(x, y)
+					if _npc_positions.has(npc_key):
+						var npc_id: String = _npc_positions[npc_key]
+						var banner := _create_npc_banner(npc_id)
+						if banner:
+							banner.position = pos + Vector3(0.0, 1.0, 0.0)
+							add_child(banner)
+							_dynamic_children.append(banner)
 
 func _place_player_at_start() -> void:
 	for y in range(grid_height):
@@ -398,6 +402,22 @@ func _create_tile_marker(world_pos: Vector3, color: Color, texture_path: String 
 	mat.emission_energy_multiplier = 0.5
 	marker.material_override = mat
 	return marker
+
+func _create_npc_banner(npc_id: String) -> Sprite3D:
+	var record: Dictionary = DataRegistry.get_record(npc_id)
+	var portrait_path: String = record.get("portrait", "")
+	if portrait_path.is_empty():
+		return null
+	var tex := ResLoader.load_texture("base", portrait_path)
+	if not tex:
+		return null
+	var sprite := Sprite3D.new()
+	sprite.texture = tex
+	sprite.pixel_size = 0.01
+	sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	sprite.no_depth_test = false
+	sprite.modulate = Color(1.0, 1.0, 1.0, 0.9)
+	return sprite
 
 func check_tile_interaction() -> void:
 	if grid_data.size() == 0:
