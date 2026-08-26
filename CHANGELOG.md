@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.3.1-alpha] - 2026-08-26
+
+### Fixed
+- **MP lost on invalid spell target** — MP is now deducted only after target validation, preventing wasted MP on dead or out-of-range targets
+- **Defending flag never cleared** — `clear_defending()` is now called at the start of each combat round so damage reduction doesn't persist permanently
+- **Combat log scroll race** — Replaced `await` with `call_deferred` to prevent scroll position jumping when multiple log entries are emitted in the same frame
+- Removed unused `current_turn_idx` variable from CombatManager
+
 ## [0.3.0-alpha] - 2026-08-25
 
 ### Added
