@@ -4,7 +4,7 @@ A moddable and extensible grid-based first-person dungeon crawler — old-school
 
 ## Status
 
-**Alpha 0.2.2-alpha** — Data-driven party and dungeons, configurable layout, settings system.
+**Alpha 0.2.3-alpha** — Data-driven party and dungeons, debug logging, data validation.
 
 ## Requirements
 

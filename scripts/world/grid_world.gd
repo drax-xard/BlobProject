@@ -18,22 +18,47 @@ var player_facing: int = Facing.NORTH
 var _dynamic_children: Array[Node] = []
 
 func _ready() -> void:
+	if GameManager.party.size() > 0:
+		_load_dungeon_for_game()
+	else:
+		GameManager.party_changed.connect(_load_dungeon_for_game, CONNECT_ONE_SHOT)
+
+func _load_dungeon_for_game() -> void:
+	if GameManager.current_dungeon_id.is_empty():
+		DebugLog.warn("GridWorld: No dungeon ID set, using default grid")
+		_build_default_grid()
+		return
 	load_dungeon(GameManager.current_dungeon_id, GameManager.current_floor)
 
 func load_dungeon(dungeon_id: String, floor: int) -> void:
 	var dungeon_record: Dictionary = DataRegistry.get_record(dungeon_id)
 	if dungeon_record.is_empty():
-		push_warning("GridWorld: Dungeon record not found: %s" % dungeon_id)
+		DebugLog.warn("GridWorld: Dungeon record not found: %s" % dungeon_id)
 		_build_default_grid()
 		return
-	var floor_data: Array = dungeon_record.get("floor_data", [])
+	var floor_data: Variant = dungeon_record.get("floor_data")
+	if not floor_data is Array:
+		DebugLog.data_issue(dungeon_id, "floor_data", "Array", typeof(floor_data))
+		_build_default_grid()
+		return
 	if floor < 1 or floor > floor_data.size():
-		push_warning("GridWorld: Invalid floor %d for dungeon %s" % [floor, dungeon_id])
+		DebugLog.warn("GridWorld: Invalid floor %d for dungeon %s (has %d floors)" % [floor, dungeon_id, floor_data.size()])
 		_build_default_grid()
 		return
-	var fd: Dictionary = floor_data[floor - 1]
-	grid_width = fd["width"]
-	grid_height = fd["height"]
+	var fd: Variant = floor_data[floor - 1]
+	if not fd is Dictionary:
+		DebugLog.data_issue(dungeon_id, "floor_data[%d]" % (floor - 1), "Dictionary", typeof(fd))
+		_build_default_grid()
+		return
+	var w: Variant = fd.get("width")
+	var h: Variant = fd.get("height")
+	if not w is int or not h is int:
+		DebugLog.data_issue(dungeon_id, "floor_data[%d].width/height" % (floor - 1), "int", "width=%s, height=%s" % [w, h])
+		_build_default_grid()
+		return
+	grid_width = w
+	grid_height = h
+	DebugLog.info("GridWorld: Loaded dungeon '%s' floor %d (%dx%d)" % [dungeon_id, floor, grid_width, grid_height])
 	_generate_border_grid()
 	_build_grid_mesh()
 	_place_player_at_start()
@@ -86,7 +111,8 @@ func _place_player_at_start() -> void:
 			if grid_data[y][x] == 0:
 				player_grid_pos = Vector2i(x, y)
 				return
-	player_grid_pos = Vector2i(1, 1)
+	DebugLog.warn("GridWorld: No walkable tile found — player placed at (0,0) which may be a wall")
+	player_grid_pos = Vector2i.ZERO
 
 func _update_camera() -> void:
 	var target_pos := Vector3(

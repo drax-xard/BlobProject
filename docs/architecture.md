@@ -58,7 +58,7 @@ var party: Array[Dictionary] = []   # up to 4 characters
 
 Each dictionary holds: `id`, `name`, `class_id`, `level`, `hp`, `max_hp`, `mp`, `max_mp`, `strength`, `defense`, `vitality`, `energy`, `agility`, `luck`, `xp`, `xp_to_next`, `equipment` (slot-keyed dict), `spells` (Array[String]), `skills` (Array[String]).
 
-On `_ready()` GameManager connects to `DataRegistry.all_data_loaded` signal. Once data is ready, `start_new_game()` is called, which populates a default party of four characters (Roland, Elara, Aldric, Shade) with stats derived from class JSON records, sets `current_dungeon_id = "dungeon_01"`, and transitions to `EXPLORING` state.
+On `_ready()` GameManager connects to `DataRegistry.all_data_loaded` signal. Once data is ready, `start_new_game()` is called, which populates a default party of four characters (Roland, Elara, Aldric, Shade) with stats derived from class JSON records, sets `current_dungeon_id = "dungeon_01"`, and transitions to `EXPLORING` state. GridWorld waits for `party_changed` before loading the dungeon, ensuring data is available.
 
 **Key API:**
 
@@ -94,6 +94,19 @@ DataRegistry.get_all_ids() -> Array[String]
 ```
 
 Records without an `"id"` field are silently skipped. Duplicate IDs overwrite the earlier entry.
+
+### 4. DebugLog (`scripts/core/debug_log.gd`)
+
+**Not an autoload — a static utility class.** Writes structured log entries to `user://logs/debug.log` for post-session debugging. Also prints to Godot console.
+
+```gdscript
+DebugLog.info("message")       # [INFO]
+DebugLog.warn("message")       # [WARN] + push_warning
+DebugLog.error("message")      # [ERROR] + push_error
+DebugLog.data_issue(record_id, field, expected, got)  # [DATA] — for validation failures
+```
+
+Creates the log directory and file on first write. Each entry is timestamped per-session.
 
 ---
 

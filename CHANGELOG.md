@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.3-alpha] - 2026-08-25
+
+### Fixed
+- **GridWorld startup timing** — Dungeon load now waits for DataRegistry to finish loading via `party_changed` signal, preventing fallback to default grid on first load
+- **Data validation crashes** — Safe field access with `get()` and type checks throughout, preventing crashes on malformed JSON
+
+### Added
+- **DebugLog** (`scripts/core/debug_log.gd`) — File-based debug logging to `user://logs/debug.log` with info/warn/error/data_issue levels
+- Data shape validation for all record types (classes, equipment, consumables, spells, enemies, dungeons)
+- Missing required fields logged with record ID, field name, expected type, and actual value
+- Startup and data load progress logged to debug.log
+- Party initialization logs character stats on creation
+- GridWorld logs dungeon dimensions on successful load
+
 ## [0.2.2-alpha] - 2026-08-25
 
 ### Changed
