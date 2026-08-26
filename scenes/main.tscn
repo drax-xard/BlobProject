@@ -87,6 +87,6 @@ offset_top = -24.0
 offset_right = 200.0
 offset_bottom = -4.0
 grow_vertical = 0
-text = "BlobProject v0.5.0-alpha"
+text = "BlobProject v0.6.0-alpha"
 
 [node name="SaveLoadMenu" parent="." instance=ExtResource("11_save")]

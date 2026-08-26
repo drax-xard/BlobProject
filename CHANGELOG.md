@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.6.0-alpha] - 2026-08-26
+
+### Added
+- **SaveManager** (`scripts/core/save_manager.gd`) — Autoload for persistent game state
+  - `save_game(slot)` / `load_game(slot)` / `delete_save(slot)`
+  - `get_save_info(slot)` / `has_save(slot)` / `get_all_save_slots()`
+  - Saves party, inventory, gold, dungeon_id, floor, turn_count, player position/facing
+  - JSON format at `user://saves/save_<slot>.json` with version and timestamp
+  - 5 save slots
+- **SaveLoadMenu** (`scripts/ui/save_load_menu.gd` + `.tscn`) — Overlay save/load UI
+  - 5 slots showing party names, floor, gold, timestamp
+  - Save mode with overwrite confirmation
+  - Load mode with confirmation
+  - Escape key opens save menu during exploration
+- `GameManager.game_loaded` signal emitted after loading a save
+- GridWorld reloads dungeon on `game_loaded` signal
+
+### Changed
+- Phase 5 marked complete in development plan
+
 ## [0.5.0-alpha] - 2026-08-26
 
 ### Added
