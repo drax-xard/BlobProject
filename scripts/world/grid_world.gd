@@ -21,6 +21,8 @@ var _stairs_up_pos: Vector2i = Vector2i.ZERO
 var _stairs_down_pos: Vector2i = Vector2i.ZERO
 var _current_dungeon_id: String = ""
 var _current_floor: int = 1
+var _npc_positions: Dictionary = {}
+var _last_interacted_cell: Vector2i = Vector2i(-1, -1)
 
 @onready var camera: Camera3D = $Camera3D
 
@@ -99,6 +101,16 @@ func _build_default_grid() -> void:
 	_update_camera()
 
 func _generate_dungeon(dungeon_id: String, floor: int) -> void:
+	var dungeon_record: Dictionary = DataRegistry.get_record(dungeon_id)
+	var floor_data_arr: Variant = dungeon_record.get("floor_data", [])
+	var current_fd: Dictionary = {}
+	if floor_data_arr is Array and floor - 1 < floor_data_arr.size():
+		current_fd = floor_data_arr[floor - 1]
+	var layout: Variant = current_fd.get("layout")
+	if layout is Array and layout.size() > 0:
+		var npcs: Array = current_fd.get("npcs", [])
+		_load_layout(layout, npcs)
+		return
 	var gen := DungeonGenerator.new()
 	var seed_value: int = hash(dungeon_id) + floor * 1000
 	var result: Dictionary = gen.generate(grid_width, grid_height, seed_value)
@@ -108,6 +120,27 @@ func _generate_dungeon(dungeon_id: String, floor: int) -> void:
 	DebugLog.info("GridWorld: Generated dungeon with %d rooms, stairs_up=%s, stairs_down=%s" % [
 		result["rooms"].size(), _stairs_up_pos, _stairs_down_pos
 	])
+
+func _load_layout(layout: Array, npcs: Array = []) -> void:
+	grid_data.clear()
+	_npc_positions.clear()
+	for y in range(layout.size()):
+		var row: Array = layout[y]
+		var grid_row: Array = []
+		for x in range(row.size()):
+			var cell: int = int(row[x])
+			grid_row.append(cell)
+			if cell == DungeonGenerator.CELL_STAIRS_UP:
+				_stairs_up_pos = Vector2i(x, y)
+			elif cell == DungeonGenerator.CELL_STAIRS_DOWN:
+				_stairs_down_pos = Vector2i(x, y)
+		grid_data.append(grid_row)
+	for npc_data in npcs:
+		if npc_data is Dictionary:
+			var pos: Dictionary = npc_data.get("pos", {})
+			var key := Vector2i(int(pos.get("x", 0)), int(pos.get("y", 0)))
+			_npc_positions[key] = npc_data.get("id", "")
+	DebugLog.info("GridWorld: Loaded hand-crafted layout (%dx%d, %d NPCs)" % [grid_width, grid_height, _npc_positions.size()])
 
 func _generate_border_grid() -> void:
 	grid_data.clear()
@@ -148,6 +181,11 @@ func _build_grid_mesh() -> void:
 					_dynamic_children.append(marker)
 				elif cell == DungeonGenerator.CELL_CHEST:
 					var marker := _create_tile_marker(pos, Color(0.9, 0.7, 0.1), "chest_closed.png")
+					add_child(marker)
+					_dynamic_children.append(marker)
+				elif cell == DungeonGenerator.CELL_NPC:
+					var marker := _create_tile_marker(pos, Color(0.3, 0.7, 1.0))
+					marker.position.y = pos.y + 0.6
 					add_child(marker)
 					_dynamic_children.append(marker)
 
@@ -369,6 +407,10 @@ func check_tile_interaction() -> void:
 	if player_grid_pos.y < 0 or player_grid_pos.y >= grid_height:
 		_player_on_stairs("", Vector2i.ZERO)
 		return
+	if player_grid_pos == _last_interacted_cell:
+		_last_interacted_cell = Vector2i(-1, -1)
+		_player_on_stairs("", player_grid_pos)
+		return
 	var cell: int = grid_data[player_grid_pos.y][player_grid_pos.x]
 	match cell:
 		DungeonGenerator.CELL_STAIRS_DOWN:
@@ -377,6 +419,9 @@ func check_tile_interaction() -> void:
 			_player_on_stairs("stairs_up", player_grid_pos)
 		DungeonGenerator.CELL_CHEST:
 			_open_chest()
+			_player_on_stairs("", player_grid_pos)
+		DungeonGenerator.CELL_NPC:
+			_interact_with_npc()
 			_player_on_stairs("", player_grid_pos)
 		_:
 			_player_on_stairs("", player_grid_pos)
@@ -415,3 +460,10 @@ func _open_chest() -> void:
 	GameManager.inventory_changed.emit()
 	GameManager.game_event.emit("Found a Health Potion and %d gold!" % gold_found, Color(1.0, 0.85, 0.2))
 	DebugLog.info("GridWorld: Opened chest! Found health potion and %d gold." % gold_found)
+
+func _interact_with_npc() -> void:
+	if _npc_positions.has(player_grid_pos):
+		var npc_id: String = _npc_positions[player_grid_pos]
+		if not npc_id.is_empty():
+			_last_interacted_cell = player_grid_pos
+			DialogueManager.start_dialogue(npc_id)

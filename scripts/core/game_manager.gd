@@ -52,7 +52,7 @@ func _on_data_ready() -> void:
 func start_new_game() -> void:
 	_init_default_party()
 	turn_count = 0
-	current_dungeon_id = "dungeon_01"
+	current_dungeon_id = "hub_town"
 	current_floor = 1
 	current_state = GameState.EXPLORING
 	DebugLog.info("GameManager: New game started — dungeon='%s' floor=%d party_size=%d" % [current_dungeon_id, current_floor, party.size()])

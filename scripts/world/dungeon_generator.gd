@@ -6,6 +6,7 @@ const CELL_DOOR: int = 2
 const CELL_STAIRS_UP: int = 3
 const CELL_STAIRS_DOWN: int = 4
 const CELL_CHEST: int = 7
+const CELL_NPC: int = 8
 
 var _rng: RandomNumberGenerator
 var _grid: Array[Array] = []
