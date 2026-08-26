@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.7.1-alpha] - 2026-08-26
+
+### Added
+- **Hub town** — Game now starts in "Riverside Village" (12x12 hand-crafted layout)
+  - Blacksmith NPC at position (10, 7) with branching dialogue
+  - Door at (4, 3) connecting building to town square
+  - Stairs up at (9, 10) for future dungeon access
+  - Zero encounter rate (safe zone)
+- **NPC cell type** — `CELL_NPC = 8` added to DungeonGenerator
+- **Hand-crafted layouts** — GridWorld supports `layout` array in floor_data, bypassing BSP generator
+- **NPC grid entities** — NPCs rendered as blue markers, triggered on player step
+- **NPC interaction tracking** — `_last_interacted_cell` prevents dialogue re-triggering on same cell
+
 ## [0.7.0-alpha] - 2026-08-26
 
 ### Added
