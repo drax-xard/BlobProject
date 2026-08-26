@@ -6,26 +6,29 @@
 
 ---
 
-## Current State (v0.6.0-alpha)
+## Current State (v0.7.0-alpha)
 
 The project is a working Godot 4.4+ prototype with:
 - 3D first-person viewport with camera, lighting, and grid rendering
 - Turn-based movement (forward, backward, strafe, turn) via keyboard and UI buttons
 - 4-character party display with stats derived from class data
 - Configurable layout ratios via `settings.cfg`
-- JSON data loading system (`DataRegistry`) with classes, items, spells, enemies, dungeons
+- JSON data loading system (`DataRegistry`) with classes, items, spells, enemies, dungeons, NPCs
 - Full inventory and equipment system with UI overlay
 - Turn-based combat with enemy AI, spell casting, items, and flee
 - Random encounters with weighted encounter tables
 - **BSP procedural dungeon generation** with rooms, corridors, stairs, and chests
 - **Floor transitions** via stairs (manual Use Stair button)
 - **ResourceLoader** for pack-based assets with placeholder fallbacks
-- **SaveManager** with 5 save slots and Save/Load UI overlay
-- Autoloads: `SettingsManager`, `GameManager`, `DataRegistry`, `SaveManager`
+- **SaveManager** with 5 save slots, pause menu, and Save/Load UI overlay
+- **NPC Dialogue System** with branching conversations, conditions, and effects
+- **Game flags and quest tracking** for dialogue conditions
+- Autoloads: `SettingsManager`, `GameManager`, `DataRegistry`, `SaveManager`, `DialogueManager`
 
 **What does NOT work yet:**
-- No NPC interaction or dialogue
-- No shop/merchant system
+- No shop/merchant UI (dialogue stubs exist)
+- No NPC entities on dungeon grid
+- No main menu
 
 ---
 
