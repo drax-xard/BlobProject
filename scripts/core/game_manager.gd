@@ -28,12 +28,12 @@ var turn_count: int = 0
 var saved_player_pos: Vector2i = Vector2i.ZERO
 var saved_player_facing: int = 0
 
-var party: Array[Dictionary] = []
+var party: Array = []
 var party_size: int:
 	get:
 		return party.size()
 
-var inventory: Array[Dictionary] = []
+var inventory: Array = []
 var gold: int = 0
 
 func _ready() -> void:
