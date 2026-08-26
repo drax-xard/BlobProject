@@ -26,14 +26,15 @@ The project is a working Godot 4.4+ prototype with:
 
 ---
 
-## Phase 1: Data Integration (Bridge existing systems)
+## Phase 1: Data Integration (Bridge existing systems) ✅ COMPLETE
 
 > **Goal:** Make the existing JSON data actually drive the game.
 > **Depends on:** Nothing (start here).
+> **Status:** Completed in v0.2.2-alpha.
 
-### Task 1.1: Load dungeon data into GridWorld
+### Task 1.1: Load dungeon data into GridWorld ✅
 
-**Files to modify:** `scripts/world/grid_world.gd`
+**Files modified:** `scripts/world/grid_world.gd`
 
 **What to do:**
 - Remove the hardcoded `_build_test_dungeon()` method
@@ -55,9 +56,9 @@ The project is a working Godot 4.4+ prototype with:
 - The dungeon JSON floor_data has: `floor`, `width`, `height`, `encounter_rate`, `enemy_pool`, `music`
 - For now, generate a bordered rectangle: walls on perimeter, floor inside
 
-### Task 1.2: Load default party from class data
+### Task 1.2: Load default party from class data ✅
 
-**Files to modify:** `scripts/core/game_manager.gd`
+**Files modified:** `scripts/core/game_manager.gd`
 
 **What to do:**
 - Replace `_init_default_party()` to look up class records from `DataRegistry`
@@ -77,9 +78,9 @@ The project is a working Godot 4.4+ prototype with:
 - Character dictionaries currently have: id, name, level, hp, max_hp, mp, max_mp, strength, defense, vitality, energy, agility, luck
 - Add fields: `class_id`, `xp`, `xp_to_next`, `equipment`, `spells`, `skills`
 
-### Task 1.3: Wire up DataRegistry loading at startup
+### Task 1.3: Wire up DataRegistry loading at startup ✅
 
-**Files to modify:** `scripts/core/game_manager.gd` (or `scripts/data/data_registry.gd`)
+**Files modified:** `scripts/core/game_manager.gd`, `scripts/data/data_registry.gd`
 
 **What to do:**
 - Ensure `DataRegistry.load_all_data()` is called before `GameManager.start_new_game()`

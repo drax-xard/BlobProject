@@ -58,7 +58,7 @@ var party: Array[Dictionary] = []   # up to 4 characters
 
 Each dictionary holds: `id`, `name`, `class_id`, `level`, `hp`, `max_hp`, `mp`, `max_mp`, `strength`, `defense`, `vitality`, `energy`, `agility`, `luck`, `xp`, `xp_to_next`, `equipment` (slot-keyed dict), `spells` (Array[String]), `skills` (Array[String]).
 
-On `_ready()` GameManager calls `start_new_game()` which populates a hardcoded default party of four characters (Roland, Elara, Aldric, Shade) and sets state to `EXPLORING`.
+On `_ready()` GameManager connects to `DataRegistry.all_data_loaded` signal. Once data is ready, `start_new_game()` is called, which populates a default party of four characters (Roland, Elara, Aldric, Shade) with stats derived from class JSON records, sets `current_dungeon_id = "dungeon_01"`, and transitions to `EXPLORING` state.
 
 **Key API:**
 

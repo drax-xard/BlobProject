@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.2-alpha] - 2026-08-25
+
+### Changed
+- **Party stats derived from class data** — Character HP, MP, and all combat stats are now loaded from class JSON records instead of being hardcoded
+- **Dungeon grid loaded from data** — GridWorld reads dimensions from dungeon JSON records, replacing hardcoded 8x8 test grid
+- **Startup sequencing fixed** — DataRegistry loads all JSON data before GameManager initializes, ensuring data is available at game start
+
+### Added
+- `GameManager.current_dungeon_id` and `current_floor` track dungeon progression
+- `GridWorld.load_dungeon(dungeon_id, floor)` public method for loading dungeon floors
+- `GridWorld._generate_border_grid()` extracted for reusable grid generation
+- Input bindings: `open_inventory` (I), `pause_game` (Escape)
+- Pause and inventory state toggles in TurnManager
+
 ## [0.2.1-alpha] - 2026-08-25
 
 ### Added

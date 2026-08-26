@@ -4,7 +4,7 @@ A moddable and extensible grid-based first-person dungeon crawler — old-school
 
 ## Status
 
-**Alpha 0.1.0** — Initial project scaffold with grid movement and UI framework.
+**Alpha 0.2.2-alpha** — Data-driven party and dungeons, configurable layout, settings system.
 
 ## Requirements
 

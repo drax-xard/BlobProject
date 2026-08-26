@@ -10,7 +10,7 @@
 | Language | GDScript |
 | Data | JSON |
 | License | GPLv3 |
-| Status | **Alpha 0.2.1-alpha** |
+| Status | **Alpha 0.2.2-alpha** |
 
 ---
 

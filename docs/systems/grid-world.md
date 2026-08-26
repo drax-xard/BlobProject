@@ -156,9 +156,13 @@ Out-of-bounds positions return `false`. Walls (value 1) return `false`.
 | `player_moved` | `new_position: Vector2i` | Emitted after a successful move |
 | `player_turned` | `new_facing: int` | Emitted after a successful turn |
 
-## Test Dungeon
+## Dungeon Loading
 
-`_build_test_dungeon()` creates an 8×8 grid with walls on all border cells and three interior walls at `(3,3)`, `(4,3)`, and `(3,4)`.
+`load_dungeon(dungeon_id: String, floor: int)` loads dungeon dimensions from `DataRegistry`, generates a bordered grid (walls on perimeter, floor inside), builds the mesh, and places the player. Falls back to an 8×8 default grid if the record is missing.
+
+`_generate_border_grid()` creates the grid data with walls on all border cells and floor cells inside.
+
+`GameManager` tracks `current_dungeon_id` and `current_floor`, set during `start_new_game()`.
 
 ## Future: Cell Types
 

@@ -18,13 +18,36 @@ var player_facing: int = Facing.NORTH
 var _dynamic_children: Array[Node] = []
 
 func _ready() -> void:
-	_build_test_dungeon()
+	load_dungeon(GameManager.current_dungeon_id, GameManager.current_floor)
+
+func load_dungeon(dungeon_id: String, floor: int) -> void:
+	var dungeon_record: Dictionary = DataRegistry.get_record(dungeon_id)
+	if dungeon_record.is_empty():
+		push_warning("GridWorld: Dungeon record not found: %s" % dungeon_id)
+		_build_default_grid()
+		return
+	var floor_data: Array = dungeon_record.get("floor_data", [])
+	if floor < 1 or floor > floor_data.size():
+		push_warning("GridWorld: Invalid floor %d for dungeon %s" % [floor, dungeon_id])
+		_build_default_grid()
+		return
+	var fd: Dictionary = floor_data[floor - 1]
+	grid_width = fd["width"]
+	grid_height = fd["height"]
+	_generate_border_grid()
+	_build_grid_mesh()
 	_place_player_at_start()
 	_update_camera()
 
-func _build_test_dungeon() -> void:
+func _build_default_grid() -> void:
 	grid_width = 8
 	grid_height = 8
+	_generate_border_grid()
+	_build_grid_mesh()
+	_place_player_at_start()
+	_update_camera()
+
+func _generate_border_grid() -> void:
 	grid_data.clear()
 	for y in range(grid_height):
 		var row: Array = []
@@ -34,10 +57,6 @@ func _build_test_dungeon() -> void:
 			else:
 				row.append(0)
 		grid_data.append(row)
-	grid_data[3][3] = 1
-	grid_data[3][4] = 1
-	grid_data[4][3] = 1
-	_build_grid_mesh()
 
 func _build_grid_mesh() -> void:
 	for child in _dynamic_children:

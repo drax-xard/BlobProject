@@ -25,11 +25,19 @@ var party_size: int:
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	if DataRegistry.all_data_loaded.is_connected(_on_data_ready):
+		pass
+	else:
+		DataRegistry.all_data_loaded.connect(_on_data_ready)
+
+func _on_data_ready() -> void:
 	start_new_game()
 
 func start_new_game() -> void:
 	_init_default_party()
 	turn_count = 0
+	current_dungeon_id = "dungeon_01"
+	current_floor = 1
 	current_state = GameState.EXPLORING
 	party_changed.emit()
 
@@ -41,16 +49,6 @@ func _init_default_party() -> void:
 			"name": "Roland",
 			"class_id": "warrior",
 			"level": 1,
-			"hp": 45,
-			"max_hp": 45,
-			"mp": 10,
-			"max_mp": 10,
-			"strength": 12,
-			"defense": 10,
-			"vitality": 10,
-			"energy": 6,
-			"agility": 8,
-			"luck": 6,
 			"xp": 0,
 			"xp_to_next": 100,
 			"equipment": {
@@ -69,16 +67,6 @@ func _init_default_party() -> void:
 			"name": "Elara",
 			"class_id": "mage",
 			"level": 1,
-			"hp": 25,
-			"max_hp": 25,
-			"mp": 40,
-			"max_mp": 40,
-			"strength": 4,
-			"defense": 4,
-			"vitality": 6,
-			"energy": 14,
-			"agility": 8,
-			"luck": 8,
 			"xp": 0,
 			"xp_to_next": 100,
 			"equipment": {
@@ -97,16 +85,6 @@ func _init_default_party() -> void:
 			"name": "Aldric",
 			"class_id": "cleric",
 			"level": 1,
-			"hp": 35,
-			"max_hp": 35,
-			"mp": 30,
-			"max_mp": 30,
-			"strength": 8,
-			"defense": 8,
-			"vitality": 12,
-			"energy": 10,
-			"agility": 6,
-			"luck": 8,
 			"xp": 0,
 			"xp_to_next": 100,
 			"equipment": {
@@ -125,16 +103,6 @@ func _init_default_party() -> void:
 			"name": "Shade",
 			"class_id": "thief",
 			"level": 1,
-			"hp": 30,
-			"max_hp": 30,
-			"mp": 15,
-			"max_mp": 15,
-			"strength": 8,
-			"defense": 6,
-			"vitality": 8,
-			"energy": 6,
-			"agility": 14,
-			"luck": 12,
 			"xp": 0,
 			"xp_to_next": 100,
 			"equipment": {
@@ -149,7 +117,23 @@ func _init_default_party() -> void:
 			"skills": ["backstab", "pick_lock"],
 		},
 	]
-	party = default_characters
+	for char in default_characters:
+		var class_record: Dictionary = DataRegistry.get_record(char["class_id"])
+		if class_record.is_empty():
+			push_warning("GameManager: Class record not found: %s" % char["class_id"])
+			continue
+		var base_stats: Dictionary = class_record["base_stats"]
+		char["hp"] = base_stats["hp"]
+		char["max_hp"] = base_stats["hp"]
+		char["mp"] = base_stats["mp"]
+		char["max_mp"] = base_stats["mp"]
+		char["strength"] = base_stats["strength"]
+		char["defense"] = base_stats["defense"]
+		char["vitality"] = base_stats["vitality"]
+		char["energy"] = base_stats["energy"]
+		char["agility"] = base_stats["agility"]
+		char["luck"] = base_stats["luck"]
+		party.append(char)
 
 func get_party_member(index: int) -> Dictionary:
 	if index >= 0 and index < party.size():
