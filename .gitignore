@@ -9,6 +9,9 @@ export_presets.cfg
 # User settings (machine-specific)
 settings.cfg
 
+# Debug logs
+logs/
+
 # Builds
 builds/
 export/
