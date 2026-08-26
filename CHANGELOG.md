@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ## [0.2.1-alpha] - 2026-08-25
 
+### Added
+- **Project documentation** (`docs/`) — 13 Markdown files covering all game systems:
+  - `docs/README.md` — Project index and overview
+  - `docs/architecture.md` — System architecture, autoloads, data flow, signal architecture
+  - `docs/data-formats.md` — Complete JSON record schemas for all 6 content types
+  - `docs/mod-pack-system.md` — Pack structure, loading, dependencies, override system
+  - `docs/settings.md` — SettingsManager API, config format, default values
+  - `docs/systems/turn-and-action.md` — Turn loop, action pattern, input mapping
+  - `docs/systems/grid-world.md` — 3D grid, coordinate system, camera, movement
+  - `docs/systems/party-and-characters.md` — Character stats, equipment, level-up design
+  - `docs/systems/combat.md` — Turn-based combat system design (planned)
+  - `docs/systems/inventory.md` — Inventory and equipment design (planned)
+  - `docs/systems/dialogue.md` — NPC dialogue system design (planned)
+  - `docs/systems/save-load.md` — Game persistence design (planned)
+  - `docs/systems/procedural-dungeons.md` — Dungeon generation design (planned)
+
 ### Fixed
 - Fixed reversed turn left/turn right actions by correcting swapped `LEFT`/`RIGHT` constants in `TurnAction` (`LEFT = -1`, `RIGHT = 1`).
 
