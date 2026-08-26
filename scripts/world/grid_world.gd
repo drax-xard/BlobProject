@@ -14,7 +14,8 @@ var player_grid_pos: Vector2i = Vector2i.ZERO
 var player_facing: int = Facing.NORTH
 
 @onready var camera: Camera3D = $Camera3D
-@onready var grid_mesh: MeshInstance3D = $FloorMesh
+
+var _dynamic_children: Array[Node] = []
 
 func _ready() -> void:
 	_build_test_dungeon()
@@ -38,13 +39,11 @@ func _build_test_dungeon() -> void:
 	grid_data[4][3] = 1
 	_build_grid_mesh()
 
-const CELLS_TO_KEEP := ["Camera3D", "WorldEnvironment", "DirectionalLight3D", "OmniLight3D", "FloorMesh"]
-
 func _build_grid_mesh() -> void:
-	for child in get_children():
-		if child.name in CELLS_TO_KEEP:
-			continue
-		child.queue_free()
+	for child in _dynamic_children:
+		if is_instance_valid(child):
+			child.queue_free()
+	_dynamic_children.clear()
 	var wall_scene: PackedScene = load("res://scenes/world/wall_tile.tscn")
 	var floor_scene: PackedScene = load("res://scenes/world/floor_tile.tscn")
 	for y in range(grid_height):
@@ -55,10 +54,12 @@ func _build_grid_mesh() -> void:
 				var wall := wall_scene.instantiate()
 				wall.position = pos + Vector3(0.0, CELL_SIZE * 0.5, 0.0)
 				add_child(wall)
+				_dynamic_children.append(wall)
 			else:
 				var floor_tile := floor_scene.instantiate()
 				floor_tile.position = pos
 				add_child(floor_tile)
+				_dynamic_children.append(floor_tile)
 
 func _place_player_at_start() -> void:
 	for y in range(grid_height):
@@ -107,8 +108,21 @@ func get_forward_pos() -> Vector2i:
 			offset = Vector2i(-1, 0)
 	return player_grid_pos + offset
 
+func _rotate_for_facing(dir: Vector2i) -> Vector2i:
+	match player_facing:
+		Facing.NORTH:
+			return dir
+		Facing.SOUTH:
+			return Vector2i(-dir.x, -dir.y)
+		Facing.EAST:
+			return Vector2i(-dir.y, dir.x)
+		Facing.WEST:
+			return Vector2i(dir.y, -dir.x)
+	return dir
+
 func try_move(_actor_index: int, direction: Vector2i) -> bool:
-	var target_pos := player_grid_pos + direction
+	var target_dir := _rotate_for_facing(direction)
+	var target_pos := player_grid_pos + target_dir
 	if not is_walkable(target_pos):
 		return false
 	player_grid_pos = target_pos

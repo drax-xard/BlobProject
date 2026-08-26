@@ -3,8 +3,8 @@ extends Action
 
 var turn_direction: int
 
-const LEFT: int = 1
-const RIGHT: int = -1
+const LEFT: int = -1
+const RIGHT: int = 1
 
 func _init(p_actor_index: int, p_direction: int) -> void:
 	super._init(p_actor_index)
