@@ -1,7 +1,6 @@
 # Procedural Dungeon Generation
 
-> **Design Document - Not Yet Implemented**
-> This document describes a planned system. Nothing below is currently in the codebase.
+> **Status:** Implemented (v0.4.0-alpha)
 
 ---
 

@@ -6,7 +6,7 @@
 
 ---
 
-## Current State (v0.3.0-alpha)
+## Current State (v0.4.0-alpha)
 
 The project is a working Godot 4.4+ prototype with:
 - 3D first-person viewport with camera, lighting, and grid rendering
@@ -17,10 +17,11 @@ The project is a working Godot 4.4+ prototype with:
 - Full inventory and equipment system with UI overlay
 - Turn-based combat with enemy AI, spell casting, items, and flee
 - Random encounters with weighted encounter tables
+- **BSP procedural dungeon generation** with rooms, corridors, stairs, and chests
+- **Floor transitions** via stairs up/down
 - Autoloads: `SettingsManager`, `GameManager`, `DataRegistry`
 
 **What does NOT work yet:**
-- No procedural dungeon generation (uses hardcoded border grid)
 - No save/load
 - No NPC interaction or dialogue
 - No shop/merchant system
@@ -257,7 +258,7 @@ The project is a working Godot 4.4+ prototype with:
 
 ---
 
-## Phase 4: Procedural Dungeon Generation
+## Phase 4: Procedural Dungeon Generation ✅ COMPLETE
 
 > **Goal:** Replace hardcoded grid with BSP-generated dungeons.
 > **Depends on:** Phase 1 (dungeon data loading).

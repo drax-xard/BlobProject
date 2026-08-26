@@ -16,6 +16,10 @@ var player_facing: int = Facing.NORTH
 var _encounter_rate: float = 0.0
 var _encounter_tables: Dictionary = {}
 var _combat_manager: Node = null
+var _stairs_up_pos: Vector2i = Vector2i.ZERO
+var _stairs_down_pos: Vector2i = Vector2i.ZERO
+var _current_dungeon_id: String = ""
+var _current_floor: int = 1
 
 @onready var camera: Camera3D = $Camera3D
 
@@ -35,6 +39,8 @@ func _load_dungeon_for_game() -> void:
 	load_dungeon(GameManager.current_dungeon_id, GameManager.current_floor)
 
 func load_dungeon(dungeon_id: String, floor: int) -> void:
+	_current_dungeon_id = dungeon_id
+	_current_floor = floor
 	var dungeon_record: Dictionary = DataRegistry.get_record(dungeon_id)
 	if dungeon_record.is_empty():
 		DebugLog.warn("GridWorld: Dungeon record not found: %s" % dungeon_id)
@@ -66,18 +72,31 @@ func load_dungeon(dungeon_id: String, floor: int) -> void:
 	_encounter_tables = dungeon_record.get("encounter_tables", {})
 	_combat_manager = get_tree().current_scene.get_node_or_null("CombatManager")
 	DebugLog.info("GridWorld: Loaded dungeon '%s' floor %d (%dx%d, encounter_rate=%.2f)" % [dungeon_id, floor, grid_width, grid_height, _encounter_rate])
-	_generate_border_grid()
+	_generate_dungeon(dungeon_id, floor)
 	_build_grid_mesh()
-	_place_player_at_start()
+	_place_player_at_stairs_up()
 	_update_camera()
 
 func _build_default_grid() -> void:
 	grid_width = 8
 	grid_height = 8
+	_current_dungeon_id = ""
+	_current_floor = 1
 	_generate_border_grid()
 	_build_grid_mesh()
 	_place_player_at_start()
 	_update_camera()
+
+func _generate_dungeon(dungeon_id: String, floor: int) -> void:
+	var gen := DungeonGenerator.new()
+	var seed_value: int = hash(dungeon_id) + floor * 1000
+	var result: Dictionary = gen.generate(grid_width, grid_height, seed_value)
+	grid_data = result["grid"]
+	_stairs_up_pos = result["stairs_up_pos"]
+	_stairs_down_pos = result["stairs_down_pos"]
+	DebugLog.info("GridWorld: Generated dungeon with %d rooms, stairs_up=%s, stairs_down=%s" % [
+		result["rooms"].size(), _stairs_up_pos, _stairs_down_pos
+	])
 
 func _generate_border_grid() -> void:
 	grid_data.clear()
@@ -101,7 +120,7 @@ func _build_grid_mesh() -> void:
 		for x in range(grid_width):
 			var cell: int = grid_data[y][x]
 			var pos := Vector3(x * CELL_SIZE, 0.0, y * CELL_SIZE)
-			if cell == 1:
+			if cell == DungeonGenerator.CELL_WALL:
 				var wall := wall_scene.instantiate()
 				wall.position = pos + Vector3(0.0, CELL_SIZE * 0.5, 0.0)
 				add_child(wall)
@@ -111,11 +130,19 @@ func _build_grid_mesh() -> void:
 				floor_tile.position = pos
 				add_child(floor_tile)
 				_dynamic_children.append(floor_tile)
+				if cell == DungeonGenerator.CELL_STAIRS_DOWN or cell == DungeonGenerator.CELL_STAIRS_UP:
+					var marker := _create_tile_marker(pos, Color(0.2, 0.8, 0.2))
+					add_child(marker)
+					_dynamic_children.append(marker)
+				elif cell == DungeonGenerator.CELL_CHEST:
+					var marker := _create_tile_marker(pos, Color(0.9, 0.7, 0.1))
+					add_child(marker)
+					_dynamic_children.append(marker)
 
 func _place_player_at_start() -> void:
 	for y in range(grid_height):
 		for x in range(grid_width):
-			if grid_data[y][x] == 0:
+			if grid_data[y][x] != DungeonGenerator.CELL_WALL:
 				player_grid_pos = Vector2i(x, y)
 				return
 	DebugLog.warn("GridWorld: No walkable tile found — player placed at (0,0) which may be a wall")
@@ -145,7 +172,8 @@ func is_walkable(grid_pos: Vector2i) -> bool:
 		return false
 	if grid_pos.y < 0 or grid_pos.y >= grid_height:
 		return false
-	return grid_data[grid_pos.y][grid_pos.x] == 0
+	var cell: int = grid_data[grid_pos.y][grid_pos.x]
+	return cell != DungeonGenerator.CELL_WALL
 
 func get_forward_pos() -> Vector2i:
 	var offset: Vector2i
@@ -181,6 +209,8 @@ func try_move(_actor_index: int, direction: Vector2i) -> bool:
 	_update_camera()
 	player_moved.emit(player_grid_pos)
 	_check_random_encounter()
+	if GameManager.current_state == GameManager.GameState.EXPLORING:
+		check_tile_interaction()
 	return true
 
 func try_turn(_actor_index: int, turn_dir: int) -> bool:
@@ -249,3 +279,69 @@ func _get_encounter_tier() -> String:
 			return "medium"
 		_:
 			return "hard"
+
+func _place_player_at_stairs_up() -> void:
+	if _stairs_up_pos != Vector2i.ZERO and is_walkable(_stairs_up_pos):
+		player_grid_pos = _stairs_up_pos
+		return
+	_place_player_at_start()
+
+func _create_tile_marker(world_pos: Vector3, color: Color) -> MeshInstance3D:
+	var marker := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = Vector3(CELL_SIZE * 0.6, 0.2, CELL_SIZE * 0.6)
+	marker.mesh = box
+	marker.position = world_pos + Vector3(0.0, 0.05, 0.0)
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = color
+	mat.emission_enabled = true
+	mat.emission = color
+	mat.emission_energy_multiplier = 0.5
+	marker.material_override = mat
+	return marker
+
+func check_tile_interaction() -> void:
+	if grid_data.size() == 0:
+		return
+	var cell: int = grid_data[player_grid_pos.y][player_grid_pos.x]
+	match cell:
+		DungeonGenerator.CELL_STAIRS_DOWN:
+			_transition_to_next_floor()
+		DungeonGenerator.CELL_STAIRS_UP:
+			_transition_to_previous_floor()
+		DungeonGenerator.CELL_CHEST:
+			_open_chest()
+
+func _transition_to_next_floor() -> void:
+	if _current_dungeon_id.is_empty():
+		return
+	var dungeon_record: Dictionary = DataRegistry.get_record(_current_dungeon_id)
+	var floor_data: Variant = dungeon_record.get("floor_data", [])
+	if _current_floor >= floor_data.size():
+		DebugLog.info("GridWorld: Reached the end of the dungeon!")
+		return
+	GameManager.current_floor = _current_floor + 1
+	load_dungeon(_current_dungeon_id, GameManager.current_floor)
+
+func _transition_to_previous_floor() -> void:
+	if _current_floor <= 1:
+		return
+	if _current_dungeon_id.is_empty():
+		return
+	GameManager.current_floor = _current_floor - 1
+	load_dungeon(_current_dungeon_id, GameManager.current_floor)
+
+func _find_stairs_down_pos() -> Vector2i:
+	for y in range(grid_height):
+		for x in range(grid_width):
+			if grid_data[y][x] == DungeonGenerator.CELL_STAIRS_DOWN:
+				return Vector2i(x, y)
+	return Vector2i(grid_width - 2, grid_height - 2)
+
+func _open_chest() -> void:
+	grid_data[player_grid_pos.y][player_grid_pos.x] = DungeonGenerator.CELL_FLOOR
+	_build_grid_mesh()
+	GameManager.add_item("potion_health", 1)
+	GameManager.gold += randi_range(5, 20)
+	GameManager.inventory_changed.emit()
+	DebugLog.info("GridWorld: Opened chest! Found health potion and gold.")

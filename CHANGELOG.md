@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.4.0-alpha] - 2026-08-26
+
+### Added
+- **BSP dungeon generator** (`scripts/world/dungeon_generator.gd`) — Binary Space Partitioning algorithm that generates connected rooms and corridors from width/height/seed
+  - Recursive splitting with configurable min room size
+  - Random room placement within BSP leaf nodes
+  - L-shaped corridor connections between sibling rooms (nearest-first linking)
+  - Deterministic generation via seed (same seed = same layout)
+- **Special tile system** — Extended cell values: 0=floor, 1=wall, 2=door, 3=stairs_up, 4=stairs_down, 7=chest
+  - Stairs up placed in first room, stairs down in last room
+  - 0-2 chests placed in random middle rooms
+  - Visual markers: green for stairs, gold for chests
+- **Floor transitions** — Walking onto stairs_down loads the next floor, stairs_up loads the previous floor
+  - Player position resets to stairs_up on the new floor
+  - GameManager.current_floor tracked across transitions
+- **Chest interaction** — Opening a chest removes it from the grid and awards a health potion + random gold
+- `GridWorld.is_walkable()` now uses `DungeonGenerator.CELL_WALL` constant instead of hardcoded `0`
+
+### Changed
+- GridWorld now uses `DungeonGenerator` instead of hardcoded border grid when a dungeon is loaded
+- Dungeon dimensions from JSON records now drive actual BSP generation (10x10, 12x12, 14x14)
+
 ## [0.3.1-alpha] - 2026-08-26
 
 ### Fixed
