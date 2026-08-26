@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.6.1-alpha] - 2026-08-26
+
+### Fixed
+- **Save position preserved** — Player position now correctly restored after loading a save
+- **Double dungeon load eliminated** — load_dungeon only called once via game_loaded signal
+- **Slot info shows party level** — Save slot display shows "Lv.X" from party data instead of floor number
+- **Input conflict resolved** — SaveLoadMenu uses game_state_changed signal instead of competing with TurnManager for Escape key
+- **Escape navigation** — From save/load sub-menus, Escape returns to pause menu; from pause menu, Escape resumes
+- **Pause menu buttons visible** — Fixed _slot_list being hidden before buttons were added
+- **Delete button added** — "X" button per non-empty save slot with confirmation
+- **Load menu accessible** — Save/Load now available from pause menu
+- **clear_pack key matching** — Fixed broken cache key matching in ResLoader
+- **Type compatibility** — party/inventory changed to untyped Array for JSON load compatibility; explicit Dictionary type used in party_display
+- **Detailed save/load logging** — Full save data contents logged to debug.log for verification
+
 ## [0.6.0-alpha] - 2026-08-26
 
 ### Added
