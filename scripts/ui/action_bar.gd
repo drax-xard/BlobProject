@@ -25,6 +25,17 @@ func _build_buttons() -> void:
 		btn.pressed.connect(_on_button_pressed.bind(data[2]))
 		add_child(btn)
 
+	var sep := VSeparator.new()
+	sep.custom_minimum_size.x = 8
+	add_child(sep)
+
+	var inv_btn := Button.new()
+	inv_btn.text = "I"
+	inv_btn.tooltip_text = "Inventory"
+	inv_btn.custom_minimum_size = Vector2(50, 50)
+	inv_btn.pressed.connect(_on_inventory_pressed)
+	add_child(inv_btn)
+
 func _on_button_pressed(action_data: Variant) -> void:
 	if not turn_manager:
 		turn_manager = get_tree().current_scene.get_node_or_null("TurnManager")
@@ -38,3 +49,10 @@ func _on_button_pressed(action_data: Variant) -> void:
 	if action:
 		turn_manager.process_ui_action(action)
 		action_button_pressed.emit(action)
+
+func _on_inventory_pressed() -> void:
+	var state := GameManager.current_state
+	if state == GameManager.GameState.EXPLORING:
+		GameManager.current_state = GameManager.GameState.INVENTORY
+	elif state == GameManager.GameState.INVENTORY:
+		GameManager.current_state = GameManager.GameState.EXPLORING

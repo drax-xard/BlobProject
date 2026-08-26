@@ -253,6 +253,12 @@ func _refresh_equipment() -> void:
 			item_label.text = item_name
 			item_label.add_theme_font_size_override("font_size", 12)
 			hbox.add_child(item_label)
+			var unequip_btn := Button.new()
+			unequip_btn.text = "X"
+			unequip_btn.tooltip_text = "Unequip"
+			unequip_btn.custom_minimum_size = Vector2(24, 20)
+			unequip_btn.pressed.connect(_on_unequip_pressed.bind(slot))
+			hbox.add_child(unequip_btn)
 
 func _refresh_inventory() -> void:
 	for child in _inventory_container.get_children():
@@ -300,6 +306,14 @@ func _update_info_label() -> void:
 func _on_item_pressed(index: int) -> void:
 	_selected_item_idx = index
 	_refresh_item_selection()
+
+func _on_unequip_pressed(slot: String) -> void:
+	var success: bool = GameManager.unequip_item(_selected_char, slot)
+	if success:
+		_info_label.text = "Unequipped from %s" % slot.replace("_", " ")
+		_refresh()
+	else:
+		_info_label.text = "Nothing to unequip in %s" % slot.replace("_", " ")
 
 func _on_equip_pressed() -> void:
 	if _selected_item_idx < 0 or _selected_item_idx >= _item_list.size():
