@@ -6,7 +6,7 @@
 
 ---
 
-## Current State (v0.4.0-alpha)
+## Current State (v0.6.0-alpha)
 
 The project is a working Godot 4.4+ prototype with:
 - 3D first-person viewport with camera, lighting, and grid rendering
@@ -18,11 +18,12 @@ The project is a working Godot 4.4+ prototype with:
 - Turn-based combat with enemy AI, spell casting, items, and flee
 - Random encounters with weighted encounter tables
 - **BSP procedural dungeon generation** with rooms, corridors, stairs, and chests
-- **Floor transitions** via stairs up/down
-- Autoloads: `SettingsManager`, `GameManager`, `DataRegistry`
+- **Floor transitions** via stairs (manual Use Stair button)
+- **ResourceLoader** for pack-based assets with placeholder fallbacks
+- **SaveManager** with 5 save slots and Save/Load UI overlay
+- Autoloads: `SettingsManager`, `GameManager`, `DataRegistry`, `SaveManager`
 
 **What does NOT work yet:**
-- No save/load
 - No NPC interaction or dialogue
 - No shop/merchant system
 
