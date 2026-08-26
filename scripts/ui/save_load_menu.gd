@@ -135,7 +135,7 @@ func open_pause_menu() -> void:
 	_mode = "pause"
 	_title_label.text = "Paused"
 	_action_panel.visible = false
-	_slot_list.visible = false
+	_slot_list.visible = true
 	_build_pause_buttons()
 	visible = true
 
