@@ -52,12 +52,12 @@ func load_dungeon(dungeon_id: String, floor: int) -> void:
 		return
 	var w: Variant = fd.get("width")
 	var h: Variant = fd.get("height")
-	if not w is int or not h is int:
-		DebugLog.data_issue(dungeon_id, "floor_data[%d].width/height" % (floor - 1), "int", "width=%s, height=%s" % [w, h])
+	if not (w is int or w is float) or not (h is int or h is float):
+		DebugLog.data_issue(dungeon_id, "floor_data[%d].width/height" % (floor - 1), "int or float", "width=%s, height=%s" % [w, h])
 		_build_default_grid()
 		return
-	grid_width = w
-	grid_height = h
+	grid_width = int(w)
+	grid_height = int(h)
 	DebugLog.info("GridWorld: Loaded dungeon '%s' floor %d (%dx%d)" % [dungeon_id, floor, grid_width, grid_height])
 	_generate_border_grid()
 	_build_grid_mesh()
