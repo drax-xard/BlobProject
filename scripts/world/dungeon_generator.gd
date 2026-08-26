@@ -103,7 +103,7 @@ func _connect_rooms() -> void:
 	for i in range(1, _rooms.size()):
 		remaining.append(_rooms[i])
 	while remaining.size() > 0:
-		var best_dist: float = 999999.0
+		var best_dist: float = INF
 		var best_conn: int = -1
 		var best_rem: int = -1
 		for ci in range(connected.size()):
@@ -166,11 +166,13 @@ func _place_specials() -> void:
 
 func _get_stairs_up_pos() -> Vector2i:
 	if _rooms.is_empty():
-		return Vector2i(1, 1)
+		return Vector2i(_grid_width / 2, _grid_height / 2)
 	return Vector2i(_rooms[0]["cx"], _rooms[0]["cy"])
 
 func _get_stairs_down_pos() -> Vector2i:
 	if _rooms.size() < 2:
-		return Vector2i(1, 1)
+		if _rooms.is_empty():
+			return Vector2i(_grid_width / 2, _grid_height / 2)
+		return Vector2i(_rooms[0]["cx"], _rooms[0]["cy"])
 	var last: Dictionary = _rooms[_rooms.size() - 1]
 	return Vector2i(last["cx"], last["cy"])

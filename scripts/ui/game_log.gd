@@ -16,7 +16,12 @@ func _connect_signals() -> void:
 		GameManager.party_changed.connect(_on_party_changed)
 		GameManager.inventory_changed.connect(_on_inventory_changed)
 		GameManager.game_event.connect(_on_game_event)
-	var combat_manager: Node = get_tree().current_scene.get_node_or_null("CombatManager")
+	if not is_inside_tree():
+		return
+	var scene: Node = get_tree().current_scene
+	if not scene:
+		return
+	var combat_manager: Node = scene.get_node_or_null("CombatManager")
 	if combat_manager:
 		if combat_manager.has_signal("combat_log_entry"):
 			combat_manager.combat_log_entry.connect(_on_combat_log)

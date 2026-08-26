@@ -304,6 +304,10 @@ func _create_tile_marker(world_pos: Vector3, color: Color) -> MeshInstance3D:
 func check_tile_interaction() -> void:
 	if grid_data.size() == 0:
 		return
+	if player_grid_pos.x < 0 or player_grid_pos.x >= grid_width:
+		return
+	if player_grid_pos.y < 0 or player_grid_pos.y >= grid_height:
+		return
 	var cell: int = grid_data[player_grid_pos.y][player_grid_pos.x]
 	match cell:
 		DungeonGenerator.CELL_STAIRS_DOWN:
@@ -334,14 +338,11 @@ func _transition_to_previous_floor() -> void:
 	GameManager.current_floor = _current_floor - 1
 	load_dungeon(_current_dungeon_id, GameManager.current_floor)
 
-func _find_stairs_down_pos() -> Vector2i:
-	for y in range(grid_height):
-		for x in range(grid_width):
-			if grid_data[y][x] == DungeonGenerator.CELL_STAIRS_DOWN:
-				return Vector2i(x, y)
-	return Vector2i(grid_width - 2, grid_height - 2)
-
 func _open_chest() -> void:
+	if player_grid_pos.x < 0 or player_grid_pos.x >= grid_width:
+		return
+	if player_grid_pos.y < 0 or player_grid_pos.y >= grid_height:
+		return
 	grid_data[player_grid_pos.y][player_grid_pos.x] = DungeonGenerator.CELL_FLOOR
 	_build_grid_mesh()
 	var gold_found: int = randi_range(5, 20)

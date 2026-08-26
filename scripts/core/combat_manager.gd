@@ -129,6 +129,8 @@ func _resolve_all_turns() -> void:
 		return a_agi > b_agi
 	)
 	for action in all_actions:
+		if not encounter_active:
+			break
 		if action["type"] == "party":
 			_resolve_party_action(action)
 		else:
@@ -246,6 +248,8 @@ func _resolve_party_action(action: Dictionary) -> void:
 			var amount: int = randi_range(val_min, val_max) if val_max > 0 else val_min
 			if effect == "heal":
 				var target: int = action["params"].get("target", char_idx)
+				if target < 0 or target >= GameManager.party.size():
+					return
 				GameManager.heal_party_member(target, amount)
 				GameManager.remove_item(item_id, 1)
 				var target_name: String = GameManager.party[target]["name"]
@@ -272,7 +276,7 @@ func _resolve_party_action(action: Dictionary) -> void:
 			var flee_chance: float = float(party_agi) / float(party_agi + enemy_agi) if (party_agi + enemy_agi) > 0 else 0.5
 			if randf() < flee_chance:
 				_log("Successfully fled from combat!")
-				_end_encounter(false)
+				_end_encounter(false, true)
 			else:
 				_log("Failed to flee!")
 				turn_resolved.emit(member["name"], "flee", "failed")
@@ -311,7 +315,7 @@ func _calculate_physical_damage(attacker: Dictionary, defender: Dictionary) -> i
 			weapon_mult = float(dmg_min + dmg_max) / 2.0
 	var base: float = attacker["strength"] * weapon_mult
 	var armor_mult: float = 1.0
-	var armor_id: String = attacker.get("equipment", {}).get("body", "")
+	var armor_id: String = defender.get("equipment", {}).get("body", "")
 	if not armor_id.is_empty():
 		var armor_record: Dictionary = DataRegistry.get_record(armor_id)
 		if not armor_record.is_empty():
@@ -331,7 +335,7 @@ func _calculate_spell_damage(attacker: Dictionary, spell_record: Dictionary) -> 
 	var dmg_min: int = int(spell_record.get("damage_min", 5))
 	var dmg_max: int = int(spell_record.get("damage_max", 10))
 	var base: float = randf_range(dmg_min, dmg_max)
-	var energy_mult: float = 1.0 + attacker["energy"] * 0.05
+	var energy_mult: float = 1.0 + attacker.get("energy", 5) * 0.05
 	return int(base * energy_mult)
 
 func _calculate_enemy_damage(enemy: Dictionary, target: Dictionary) -> int:
@@ -370,7 +374,7 @@ func _check_combat_end() -> String:
 		return "victory"
 	return "ongoing"
 
-func _end_encounter(victory: bool) -> void:
+func _end_encounter(victory: bool, fled: bool = false) -> void:
 	if not encounter_active:
 		return
 	encounter_active = false
@@ -400,17 +404,18 @@ func _end_encounter(victory: bool) -> void:
 		_log("Victory! Gained %d XP, %d gold" % [total_xp, total_gold])
 		if loot_items.size() > 0:
 			_log("Found items: %s" % ", ".join(loot_items))
-	else:
+	elif not fled:
 		_log("Defeat... The party has fallen.")
 	GameManager.party_changed.emit()
 	GameManager.inventory_changed.emit()
 	encounter_ended.emit(victory)
 
 func _check_level_up(member: Dictionary) -> void:
-	while member["xp"] >= member["xp_to_next"]:
+	while member["xp"] >= member["xp_to_next"] and member["xp_to_next"] > 0:
 		member["xp"] -= member["xp_to_next"]
 		member["level"] += 1
-		member["xp_to_next"] = int(member["xp_to_next"] * 1.5)
+		var next_xp: int = int(member["xp_to_next"] * 1.5)
+		member["xp_to_next"] = maxi(next_xp, member["xp_to_next"] + 1)
 		var class_record: Dictionary = DataRegistry.get_record(member.get("class_id", ""))
 		if class_record.is_empty():
 			continue

@@ -13,7 +13,6 @@ var _result_panel: VBoxContainer
 var _result_label: Label
 var _info_label: Label
 
-var _selecting_target: bool = false
 var _pending_action_type: String = ""
 var _pending_action_params: Dictionary = {}
 var _combat_victory: bool = false
@@ -172,6 +171,8 @@ func _get_reward_summary() -> String:
 
 func _on_continue_pressed() -> void:
 	visible = false
+	_pending_action_type = ""
+	_pending_action_params = {}
 	if _combat_victory:
 		GameManager.current_state = GameManager.GameState.EXPLORING
 	else:
@@ -308,6 +309,7 @@ func _on_magic_pressed() -> void:
 func _show_spell_selection(spells: Array[Dictionary]) -> void:
 	for child in _target_buttons.get_children():
 		child.queue_free()
+	_command_panel.visible = false
 	_target_panel.visible = true
 	for spell in spells:
 		var btn := Button.new()
@@ -346,6 +348,7 @@ func _on_item_pressed() -> void:
 func _show_item_selection(items: Array[Dictionary]) -> void:
 	for child in _target_buttons.get_children():
 		child.queue_free()
+	_command_panel.visible = false
 	_target_panel.visible = true
 	for item in items:
 		var btn := Button.new()
@@ -380,6 +383,7 @@ func _on_flee_pressed() -> void:
 func _show_target_selection(allow_ally: bool) -> void:
 	for child in _target_buttons.get_children():
 		child.queue_free()
+	_command_panel.visible = false
 	_target_panel.visible = true
 	if allow_ally:
 		for i in range(GameManager.party.size()):
