@@ -256,6 +256,8 @@ func try_move(_actor_index: int, direction: Vector2i) -> bool:
 	if not is_walkable(target_pos):
 		return false
 	player_grid_pos = target_pos
+	if player_grid_pos != _last_interacted_cell:
+		_last_interacted_cell = Vector2i(-1, -1)
 	_sync_position_to_game_manager()
 	_update_camera()
 	player_moved.emit(player_grid_pos)
