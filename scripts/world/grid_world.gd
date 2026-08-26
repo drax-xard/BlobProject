@@ -2,6 +2,7 @@ extends Node3D
 
 signal player_moved(new_position: Vector2i)
 signal player_turned(new_facing: int)
+signal player_stair_state(is_on_stairs: bool, stair_type: String)
 
 const CELL_SIZE: float = 2.0
 
@@ -77,6 +78,7 @@ func load_dungeon(dungeon_id: String, floor: int) -> void:
 	_build_grid_mesh()
 	_place_player_at_stairs_up()
 	_update_camera()
+	_notify_stair_state()
 
 func _build_default_grid() -> void:
 	grid_width = 8
@@ -287,6 +289,39 @@ func _place_player_at_stairs_up() -> void:
 		return
 	_place_player_at_start()
 
+func _player_on_stairs(stair_type: String, pos: Vector2i) -> void:
+	player_stair_state.emit(not stair_type.is_empty(), stair_type)
+
+func _notify_stair_state() -> void:
+	if grid_data.size() == 0:
+		return
+	if player_grid_pos.x < 0 or player_grid_pos.x >= grid_width:
+		return
+	if player_grid_pos.y < 0 or player_grid_pos.y >= grid_height:
+		return
+	var cell: int = grid_data[player_grid_pos.y][player_grid_pos.x]
+	match cell:
+		DungeonGenerator.CELL_STAIRS_DOWN:
+			_player_on_stairs("stairs_down", player_grid_pos)
+		DungeonGenerator.CELL_STAIRS_UP:
+			_player_on_stairs("stairs_up", player_grid_pos)
+		_:
+			_player_on_stairs("", player_grid_pos)
+
+func use_stair() -> void:
+	if grid_data.size() == 0:
+		return
+	if player_grid_pos.x < 0 or player_grid_pos.x >= grid_width:
+		return
+	if player_grid_pos.y < 0 or player_grid_pos.y >= grid_height:
+		return
+	var cell: int = grid_data[player_grid_pos.y][player_grid_pos.x]
+	match cell:
+		DungeonGenerator.CELL_STAIRS_DOWN:
+			_transition_to_next_floor()
+		DungeonGenerator.CELL_STAIRS_UP:
+			_transition_to_previous_floor()
+
 func _create_tile_marker(world_pos: Vector3, color: Color) -> MeshInstance3D:
 	var marker := MeshInstance3D.new()
 	var box := BoxMesh.new()
@@ -303,19 +338,25 @@ func _create_tile_marker(world_pos: Vector3, color: Color) -> MeshInstance3D:
 
 func check_tile_interaction() -> void:
 	if grid_data.size() == 0:
+		_player_on_stairs("", Vector2i.ZERO)
 		return
 	if player_grid_pos.x < 0 or player_grid_pos.x >= grid_width:
+		_player_on_stairs("", Vector2i.ZERO)
 		return
 	if player_grid_pos.y < 0 or player_grid_pos.y >= grid_height:
+		_player_on_stairs("", Vector2i.ZERO)
 		return
 	var cell: int = grid_data[player_grid_pos.y][player_grid_pos.x]
 	match cell:
 		DungeonGenerator.CELL_STAIRS_DOWN:
-			_transition_to_next_floor()
+			_player_on_stairs("stairs_down", player_grid_pos)
 		DungeonGenerator.CELL_STAIRS_UP:
-			_transition_to_previous_floor()
+			_player_on_stairs("stairs_up", player_grid_pos)
 		DungeonGenerator.CELL_CHEST:
 			_open_chest()
+			_player_on_stairs("", player_grid_pos)
+		_:
+			_player_on_stairs("", player_grid_pos)
 
 func _transition_to_next_floor() -> void:
 	if _current_dungeon_id.is_empty():
