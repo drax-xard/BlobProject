@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.4.1-alpha] - 2026-08-26
+
+### Fixed
+- **Armor damage reduction** — Physical damage now correctly reads the defender's body armor instead of the attacker's
+- **Heal-item crash** — Added bounds check on target index before using heal consumables in combat
+- **Level-up infinite loop** — `_check_level_up` now guards against `xp_to_next` reaching 0 or stalling at 1
+- **Flee logging** — Successful flee no longer logs "Defeat..."; added `fled` parameter to `_end_encounter`
+- **Actions after flee** — Turn resolution loop now checks `encounter_active` to stop after a successful flee
+- **Spell damage calc** — Uses `.get()` with fallback for the `energy` stat instead of raw dict access
+- **Combat UI button overlap** — Command panel hidden during target/spell/item sub-selections to prevent conflicting clicks
+- **Combat UI stale state** — `_pending_action_type` and `_pending_action_params` cleared when Continue is pressed
+- **Dungeon generator infinite loop** — Room connection uses `INF` instead of a fixed cap for distance comparison
+- **Dungeon fallback positions** — Stairs positions use grid center instead of (1,1) which could be a wall
+- **Grid bounds checks** — `check_tile_interaction` and `_open_chest` now validate player position before grid access
+- **GameLog null crash** — Added null checks for `current_scene` and `is_inside_tree()` before accessing CombatManager
+- **Dead code removed** — `_find_stairs_down_pos` and `_selecting_target` removed
+
+### Added
+- **Game log** (`scenes/ui/game_log.tscn`, `scripts/ui/game_log.gd`) — Scrollable event log below the party display showing combat messages, dungeon events, chest finds, and party status changes
+- `GameManager.game_event(text, color)` signal for any system to emit log messages
+
 ## [0.4.0-alpha] - 2026-08-26
 
 ### Added
