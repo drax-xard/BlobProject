@@ -27,6 +27,7 @@ func save_game(slot: int) -> bool:
 		return false
 	file.store_string(JSON.stringify(data, "\t"))
 	file.close()
+	_log_save_data("Save", data)
 	DebugLog.info("SaveManager: Game saved to slot %d" % slot)
 	return true
 
@@ -46,6 +47,7 @@ func load_game(slot: int) -> bool:
 		DebugLog.error("SaveManager: Parse error in %s: %s" % [path, json.get_error_message()])
 		return false
 	var data: Dictionary = json.data
+	_log_save_data("Load", data)
 	_apply_save_data(data)
 	DebugLog.info("SaveManager: Game loaded from slot %d" % slot)
 	return true
@@ -126,6 +128,30 @@ func _apply_save_data(data: Dictionary) -> void:
 
 func _slot_path(slot: int) -> String:
 	return SAVE_DIR.path_join("save_%d.json" % slot)
+
+func _log_save_data(label: String, data: Dictionary) -> void:
+	DebugLog.info("SaveManager [%s] dungeon=%s floor=%d gold=%d turn=%d" % [
+		label, data.get("dungeon_id", "?"), data.get("floor", 0),
+		data.get("gold", 0), data.get("turn_count", 0)])
+	var pos: Dictionary = data.get("player_grid_pos", {})
+	DebugLog.info("SaveManager [%s] pos=(%d,%d) facing=%d" % [
+		label, pos.get("x", 0), pos.get("y", 0), data.get("player_facing", 0)])
+	var party: Array = data.get("party", [])
+	for i in range(party.size()):
+		if party[i] is Dictionary:
+			var m: Dictionary = party[i]
+			DebugLog.info("SaveManager [%s] party[%d]: %s Lv.%d HP=%d/%d MP=%d/%d STR=%d DEF=%d" % [
+				label, i, m.get("name", "?"), m.get("level", 0),
+				m.get("hp", 0), m.get("max_hp", 0),
+				m.get("mp", 0), m.get("max_mp", 0),
+				m.get("strength", 0), m.get("defense", 0)])
+			var eq: Dictionary = m.get("equipment", {})
+			DebugLog.info("SaveManager [%s] party[%d] equipment: %s" % [label, i, eq])
+	var inv: Array = data.get("inventory", [])
+	DebugLog.info("SaveManager [%s] inventory: %d stacks" % [label, inv.size()])
+	for i in range(inv.size()):
+		if inv[i] is Dictionary:
+			DebugLog.info("SaveManager [%s]   [%d] %s x%d" % [label, i, inv[i].get("id", "?"), inv[i].get("quantity", 0)])
 
 func _extract_party_names(party: Array) -> Array[String]:
 	var names: Array[String] = []
