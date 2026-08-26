@@ -5,6 +5,7 @@ signal _turn_ended(_turn_number: int)
 signal party_changed()
 signal inventory_changed()
 signal game_event(text: String, color: Color)
+signal game_loaded()
 
 enum GameState {
 	MENU,

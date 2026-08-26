@@ -26,6 +26,7 @@ config/icon="res://icon.svg"
 SettingsManager="*res://scripts/core/settings_manager.gd"
 GameManager="*res://scripts/core/game_manager.gd"
 DataRegistry="*res://scripts/data/data_registry.gd"
+SaveManager="*res://scripts/core/save_manager.gd"
 
 [display]
 

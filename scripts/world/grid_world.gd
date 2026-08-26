@@ -31,6 +31,10 @@ func _ready() -> void:
 		_load_dungeon_for_game()
 	else:
 		GameManager.party_changed.connect(_load_dungeon_for_game, CONNECT_ONE_SHOT)
+	GameManager.game_loaded.connect(_on_game_loaded)
+
+func _on_game_loaded() -> void:
+	load_dungeon(GameManager.current_dungeon_id, GameManager.current_floor)
 
 func _load_dungeon_for_game() -> void:
 	if GameManager.current_dungeon_id.is_empty():
