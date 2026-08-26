@@ -29,10 +29,10 @@ static func _try_load_texture(pack_id: String, path: String) -> Texture2D:
 
 static func _create_placeholder_texture(label: String) -> ImageTexture:
 	var img := Image.create(64, 64, false, Image.FORMAT_RGBA8)
-	img.fill(Color(1.0, 0.0, 1.0, 1.0))
-	var font := ThemeDB.fallback_font
-	img.draw_string(font, Vector2i(4, 30), "MISSING", HORIZONTAL_ALIGNMENT_CENTER, -1, 12, Color.WHITE)
-	img.draw_string(font, Vector2i(4, 46), label.get_file().get_basename().substr(0, 8), HORIZONTAL_ALIGNMENT_CENTER, -1, 10, Color.WHITE)
+	if label.begins_with("portrait"):
+		img.fill(Color(1.0, 0.0, 1.0))
+	else:
+		img.fill(Color(0.5, 0.0, 0.5))
 	return ImageTexture.create_from_image(img)
 
 # --- Audio ---
